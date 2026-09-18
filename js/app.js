@@ -41,7 +41,7 @@ function renderBars() {
     el.dataset.bar = b.id;
     el.setAttribute("role", "toolbar");
     el.setAttribute("aria-label", b.name);
-    el.innerHTML = `<span class="grip"></span>${b.render()}` + (b.locked ? "" : `<span class="chev">»</span><button class="band-x" data-close="${b.id}" title="Close ${b.name}" aria-label="Close ${b.name}">×</button>`);
+    el.innerHTML = `<span class="grip"></span>${b.render()}` + (b.builtin ? "" : `<span class="chev">»</span><button class="band-x" data-close="${b.id}" title="Close ${b.name}" aria-label="Close ${b.name}">×</button>`);
     if (b.fresh) { el.classList.add("fresh"); b.fresh = false; }
     (b.place === "bottom" ? bottom : bars).appendChild(el);
   }
@@ -51,6 +51,8 @@ function renderBars() {
   if (addr) addr.value = state.url;
   if (keep && document.getElementById(keep)) document.getElementById(keep).focus();
   $("#gooble-blocked") && ($("#gooble-blocked").textContent = `${state.blocked} blocked`);
+  const n = adwareCount() + (isOn("gooble") ? 1 : 0);
+  $("#era-count").textContent = n ? `${n} toolbar${n === 1 ? "" : "s"} and counting` : "0 toolbars (for now)";
   renderSide();
   $("#status").hidden = !state.status;
   updateNavButtons();
@@ -125,10 +127,10 @@ function openBar(id) {
 }
 function toggleBar(id) { isOn(id) ? closeBar(id) : openBar(id); }
 
-function installBar(b) {
+function installBar(b, msg) {
   if (!state.bars.includes(b)) state.bars.splice(state.bars.findIndex(x => x.id === "coolbar"), 0, b);
   state.installed[b.id] = true; state.on[b.id] = true; b.fresh = true;
-  load(() => { renderBars(); showInfo(`${b.name} was installed successfully. Thank you for choosing ${b.name}!`, null, "info"); });
+  load(() => { renderBars(); showInfo(msg || `${b.name} was installed successfully. Thank you for choosing ${b.name}!`, () => manageAddons(), "info"); });
 }
 
 // ---------------- info bar & status ----------------
@@ -196,6 +198,7 @@ function go(raw, { push = true } = {}) {
   if (push) { state.hist = state.hist.slice(0, state.idx + 1); state.hist.push(url); state.idx++; }
   state.url = url;
   $("#addr") && ($("#addr").value = url);
+  navClick();
   load(() => {
     const out = spec ? { title: typeof spec.title === "function" ? spec.title(url) : spec.title, html: spec.html(url) } : cannotDisplay(url);
     page.innerHTML = out.html;

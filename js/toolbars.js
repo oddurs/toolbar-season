@@ -234,4 +234,29 @@ const EXTRA_BARS = [
       ${btn("Sing a song", "buddy-sing", "", I.note)}
       ${btn("Check for updates", "say", 'data-msg="BuddyBonz has updated. BuddyBonz has installed 2 new friends."')}`,
   },
+  {
+    id: "speeddr", name: "PC Speed Doctor", respawn: 25,
+    bundled: "a pop-up that said your PC was slow (it was, because of the pop-ups)",
+    render: () => `
+      <span class="logo" style="color:#c00">+ PC Speed Doctor</span>
+      <span class="lbl">Your PC is running at <b class="blink" style="color:#c00">34%</b> speed</span>
+      <span class="meter"><i style="width:34%;background:#c00"></i></span>
+      ${btn("FIX NOW ($29.95)", "scan", "", I.shieldX)}`,
+  },
+  {
+    id: "lyricz", name: "LyricZilla Toolbar", respawn: 25,
+    bundled: "you looked up the words to one Avril Lavigne song",
+    render: () => `
+      <span class="logo" style="color:#e0306a">♪ LyricZilla</span>
+      ${srch("lyricz", "Song or artist", "Find Lyrics", 120)}
+      <span class="muted">Now playing: nothing. Lyrics found: 0. Ads found: 3.</span>`,
+  },
+  {
+    id: "peoplepage", name: "PeoplePage Chat Bar", respawn: 25,
+    bundled: "a checkbox labelled “Enhance my web experience”",
+    render: () => `
+      <span class="logo" style="color:#0a7ab8">PeoplePage</span>
+      <span class="lbl"><b id="pp-count">37</b> people are on this page right now!</span>
+      ${btn("Chat with them", "popup", 'data-pop="im"', I.person)}`,
+  },
 ];

@@ -226,10 +226,65 @@ function adTick() {
   setTimeout(adTick, rand(14000, 26000) * (n ? 1 : 2));
 }
 
+// ---------------- drag a band by its grip ----------------
+document.addEventListener("pointerdown", e => {
+  const grip = e.target.closest(".band .grip");
+  if (!grip) return;
+  const band = grip.parentElement, box = band.parentElement;
+  if (byId(band.dataset.bar)?.locked) return;
+  e.preventDefault();
+  band.classList.add("dragging");
+  const mv = ev => {
+    const after = [...box.children].find(o => o !== band && ev.clientY < o.getBoundingClientRect().top + o.offsetHeight / 2);
+    const menu = box.querySelector('[data-bar="menu"]');
+    box.insertBefore(band, after === menu ? menu.nextSibling : after || null);
+  };
+  const up = () => {
+    removeEventListener("pointermove", mv); removeEventListener("pointerup", up);
+    band.classList.remove("dragging");
+    const order = [...bars.children, ...bottom.children].map(x => x.dataset.bar);
+    state.bars = [...order.map(byId), ...state.bars.filter(b => !order.includes(b.id))];
+    measure();
+  };
+  addEventListener("pointermove", mv); addEventListener("pointerup", up);
+});
+
+// ---------------- toolbars that install themselves ----------------
+function creep() {
+  const next = EXTRA_BARS.find(b => !isInstalled(b.id));
+  if (!next) return;
+  if (!win.hidden && !document.querySelector(".dlg")) {
+    installBar(next, `${next.name} was installed automatically as part of a recommended update. No action is needed.`);
+    setTimeout(creep, rand(55000, 90000));
+  } else setTimeout(creep, 8000);
+}
+
+// IE6's navigation "click", synthesized.
+let actx;
+function navClick() {
+  try {
+    actx ||= new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state !== "running") return;
+    [0, .028].forEach(dt => {
+      const t = actx.currentTime + dt, o = actx.createOscillator(), g = actx.createGain();
+      o.type = "square";
+      o.frequency.setValueAtTime(2600, t);
+      o.frequency.exponentialRampToValueAtTime(700, t + .015);
+      g.gain.setValueAtTime(.05, t);
+      g.gain.exponentialRampToValueAtTime(.0001, t + .02);
+      o.connect(g).connect(actx.destination);
+      o.start(t); o.stop(t + .025);
+    });
+  } catch {}
+}
+addEventListener("pointerdown", () => actx?.state === "suspended" && actx.resume(), { capture: true });
+
 // ---------------- boot ----------------
 renderBars();
 go(HOME_URL);
 popupInfo();
 setTimeout(adTick, 9000);
 setTimeout(() => buddy(BUDDY_LINES[0]), 22000);
+setTimeout(creep, 45000);
+setInterval(() => { const c = $("#pp-count"); if (c) c.textContent = Math.floor(rand(20, 60)); }, 3000);
 addEventListener("resize", measure);

@@ -2,6 +2,7 @@
 
 const HOME_URL = "http://www.home-search-portal.biz/?aff=2231&src=hp_hijack";
 const KEV_URL = "http://www.geocitiez.com/Area51/Nebula/4417/";
+const FORUM_URL = "http://forums.techguyz.fake/showthread.php?t=41742";
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 const ENGINES = {
@@ -32,7 +33,7 @@ const PAGES = [
           </td>
           <td style="border:1px solid #9cf;background:#eef6ff;vertical-align:top">
             <b style="color:#036">Popular Searches</b><br>
-            <a data-go="search:how to remove toolbars">how to remove toolbars</a><br>
+            <a data-go="${FORUM_URL}">how to remove toolbars</a><br>
             <a data-go="search:why is my computer slow">why is my computer slow</a><br>
             <a data-go="search:homepage keeps changing">homepage keeps changing</a>
           </td>
@@ -69,6 +70,7 @@ const PAGES = [
             ${sponsor.map(([t, d], i) => `<div style="margin:5px 0"><a data-pop="${["winner", "winner", "screensaver", "singles", "scare"][i]}"><b>${esc(t)}</b></a><br><span style="font-size:12px">${esc(d)}</span><br><span style="color:#080;font-size:11px">www.${esc(q.toLowerCase().replace(/\W+/g, "")) || "stuff"}-deals${i}.biz</span></div>`).join("")}
           </div>
           <div style="font-size:10px;color:#888">Web Results</div>
+          <p style="margin:4px 0"><a data-go="${FORUM_URL}"><b>HELP!!! toolbars wont go away</b> - TechGuyz Forums</a><br><span style="font-size:12px">...i have like 15 toolbars and i didnt install ANY of them. my son says its spyware. how do i...</span></p>
           <p style="margin:4px 0"><a data-go="${KEV_URL}"><b>Kev's Homepage</b> - ${esc(q)} and other cool stuff</a><br><span style="font-size:12px">...welcome to my page!!! it has <b>${esc(q)}</b> and also my cats. sign my guestbook...</span></p>
           <p style="margin:4px 0"><a data-go="http://www.${esc(q.toLowerCase().replace(/\W+/g, "")) || "stuff"}.com/">${esc(q)} - Official Site</a><br><span style="font-size:12px">This result was bumped to the bottom by ${esc(brand)} Sponsored Results™.</span></p>
         </div>`;
@@ -93,6 +95,28 @@ const PAGES = [
         <p style="color:#888;font-size:11px">This site is a member of the <a data-go="http://www.webring.fake/" style="color:#0ff">Cool Kids Webring</a> · [<a data-go="http://www.webring.fake/" style="color:#0ff">&lt;&lt; prev</a> | <a data-go="http://www.webring.fake/" style="color:#0ff">next &gt;&gt;</a>]</p>
         <p style="font-size:10px;color:#666">© 1999-2005 kev · last updated: 3 years ago</p>
       </div>`,
+  },
+  {
+    match: u => u.startsWith("http://forums.techguyz.fake"),
+    title: "HELP!!! toolbars wont go away - TechGuyz Forums",
+    html: () => {
+      const bars = allBars().filter(b => !b.builtin && isOn(b.id));
+      const log = bars.map(b => `O3 - Toolbar: ${esc(b.name)} - {${(b.id + "0000-4f2a-9c0b-2231").toUpperCase()}} - C:\\PROGRA~1\\${esc(b.name.replace(/\W/g, "").slice(0, 8).toUpperCase())}\\${b.id}bar.dll`).join("<br>");
+      const post = (who, meta, body, alt) => `<tr><td style="width:120px;vertical-align:top;background:${alt ? "#e8eef7" : "#f2f5fa"};border:1px solid #c3cfe0;padding:6px;font:11px Verdana,sans-serif"><b style="color:#22229c">${who}</b><br><span style="color:#666">${meta}</span></td><td style="vertical-align:top;background:#fff;border:1px solid #c3cfe0;padding:6px;font:12px Verdana,sans-serif">${body}</td></tr>`;
+      return `
+      <div style="background:#5c7099;color:#fff;padding:6px 10px;font:bold 15px Verdana,sans-serif">TechGuyz Forums <span style="font:11px Verdana,sans-serif;opacity:.8">› Security › Virus, Spyware &amp; Hijack Help</span></div>
+      <div style="padding:8px 10px">
+      <div style="font:bold 13px Verdana,sans-serif;margin-bottom:6px">HELP!!! toolbars wont go away</div>
+      <table style="border-collapse:collapse;width:100%">
+        ${post("sk8rmom72", "Junior Member<br>Posts: 3", `I have ${bars.length || "like 15"} toolbars and I didn't install ANY of them. My son says it's spyware. I can only see a little bit of the internet at the bottom. How do I get rid of them??? Please help I am not a computer person`)}
+        ${post("Mod_Steve", "Moderator<br>Posts: 14,882", `Welcome to TechGuyz. Please download and run HijackThis, then post the log here. Do <b>not</b> fix anything yet.`, 1)}
+        ${post("sk8rmom72", "Junior Member<br>Posts: 4", `ok here it is<br><div style="font:11px 'Courier New',monospace;background:#f8f8f8;border:1px solid #ddd;padding:4px;margin-top:4px;max-height:140px;overflow:auto">Logfile of HijackThis v1.99.1<br>Scan saved at 9:14:02 PM, on 10/17/2005<br>Platform: Windows XP SP2 (WinNT 5.01.2600)<br>MSIE: Internet Explorer v6.00 SP2 (6.00.2900.2180)<br><br>R1 - HKCU\\Software\\Microsoft\\Internet Explorer\\Main,Start Page = ${esc(state.home)}<br>${log || "(no toolbars found... for now)"}</div>`)}
+        ${post("fox_fan", "Member<br>Posts: 611", `Switch to Firefox. Problem solved. /thread`, 1)}
+        ${post("xX_l33t_Xx", "Banned", `just format c: and reinstall windows lol`)}
+        ${post("Mod_Steve", "Moderator<br>Posts: 14,883", `That is a nasty infection. Run <a data-act="scan">SpyScrub SE</a> and then Tools › Manage Add-ons. Post a new log afterwards.`, 1)}
+        ${post("sk8rmom72", "Junior Member<br>Posts: 5", `UPDATE: I ran the scan and it removed everything!!! Thank you so much!!!<br><br>UPDATE 2: they are back. Also there is a purple monkey now.`)}
+      </table></div>`;
+    },
   },
   {
     match: u => u === "about:blank",
