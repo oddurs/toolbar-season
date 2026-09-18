@@ -12,7 +12,9 @@
   --visited: #551a8b;
   --ui: Tahoma, "Segoe UI", Verdana, Geneva, sans-serif;
 }
-html, body { height: 100%; }
+html, body { height: 100%; margin: 0; }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
 body {
   background:
     radial-gradient(120% 60% at 30% 108%, #5da130 0 45%, transparent 46%),
