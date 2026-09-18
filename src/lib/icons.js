@@ -1,5 +1,5 @@
 // Hand-drawn stand-ins for the 2005 XP / IE6 icon set. All inline SVG.
-const I = {
+export const I = {
   ie: `<svg viewBox="0 0 16 16"><circle cx="8" cy="8.5" r="6" fill="#2a7de1"/><circle cx="8" cy="8.5" r="3.4" fill="#fff"/><rect x="4.6" y="8" width="7" height="1.6" fill="#2a7de1"/><path d="M1.5 12c2-6 9-11 13-9-1 2-5 7-12 10z" fill="none" stroke="#f5b800" stroke-width="1.3"/></svg>`,
   back: `<svg viewBox="0 0 24 24"><defs><radialGradient id="gb" cx=".35" cy=".3"><stop offset="0" stop-color="#b7f3a4"/><stop offset=".6" stop-color="#3fae24"/><stop offset="1" stop-color="#1c7a0c"/></radialGradient></defs><circle cx="12" cy="12" r="10.5" fill="url(#gb)" stroke="#1b640e"/><path d="M13 6.5 7.5 12 13 17.5V14h4v-4h-4z" fill="#fff"/></svg>`,
   fwd: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="url(#gb)" stroke="#1b640e"/><path d="M11 6.5 16.5 12 11 17.5V14H7v-4h4z" fill="#fff"/></svg>`,
@@ -39,7 +39,7 @@ const I = {
 };
 
 // Smiley faces for the Smiley Centrale bar.
-const SMILEY_MOODS = [
+export const SMILEY_MOODS = [
   ["#fcd12a", "M5 10.5c1.5 2 4.5 2 6 0", "smile"],
   ["#fcd12a", "M5 11.5c1.5-1.8 4.5-1.8 6 0", "sad"],
   ["#ff8a2a", "M5 10h6", "meh"],
@@ -49,7 +49,7 @@ const SMILEY_MOODS = [
   ["#9be36a", "M5 11c2 1 4-1 6 0", "sick"],
   ["#fcd12a", "M5 10.5c1.5 2 4.5 2 6 0", "wink"],
 ];
-function smiley(i) {
+export function smiley(i) {
   const [fill, mouth, name] = SMILEY_MOODS[i % SMILEY_MOODS.length];
   const eyes = name === "wink"
     ? `<circle cx="6" cy="6.5" r="1.1" fill="#000"/><path d="M9 6.8h2.2" stroke="#000" stroke-width="1"/>`
@@ -60,4 +60,4 @@ function smiley(i) {
 }
 
 // The purple helper who "just wants to help you browse".
-const BUDDY_SVG = `<svg viewBox="0 0 86 104"><ellipse cx="43" cy="70" rx="28" ry="30" fill="#7b3fb8"/><ellipse cx="43" cy="76" rx="16" ry="20" fill="#b58be0"/><circle cx="43" cy="30" r="24" fill="#7b3fb8"/><ellipse cx="43" cy="37" rx="15" ry="12" fill="#c9a6ef"/><circle cx="35" cy="26" r="6" fill="#fff"/><circle cx="51" cy="26" r="6" fill="#fff"/><circle cx="36" cy="27" r="2.6" fill="#000"/><circle cx="52" cy="27" r="2.6" fill="#000"/><path d="M34 41c5 5 13 5 18 0" fill="none" stroke="#3a1260" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="43" cy="34" rx="4" ry="2.4" fill="#3a1260"/><circle cx="18" cy="26" r="6" fill="#7b3fb8"/><circle cx="68" cy="26" r="6" fill="#7b3fb8"/><path d="M16 60c-10 4-12 14-6 18M70 60c10 4 12 14 6 18" stroke="#7b3fb8" stroke-width="9" stroke-linecap="round" fill="none"/><ellipse cx="32" cy="100" rx="10" ry="4" fill="#5a2a8c"/><ellipse cx="54" cy="100" rx="10" ry="4" fill="#5a2a8c"/></svg>`;
+export const BUDDY_SVG = `<svg viewBox="0 0 86 104"><ellipse cx="43" cy="70" rx="28" ry="30" fill="#7b3fb8"/><ellipse cx="43" cy="76" rx="16" ry="20" fill="#b58be0"/><circle cx="43" cy="30" r="24" fill="#7b3fb8"/><ellipse cx="43" cy="37" rx="15" ry="12" fill="#c9a6ef"/><circle cx="35" cy="26" r="6" fill="#fff"/><circle cx="51" cy="26" r="6" fill="#fff"/><circle cx="36" cy="27" r="2.6" fill="#000"/><circle cx="52" cy="27" r="2.6" fill="#000"/><path d="M34 41c5 5 13 5 18 0" fill="none" stroke="#3a1260" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="43" cy="34" rx="4" ry="2.4" fill="#3a1260"/><circle cx="18" cy="26" r="6" fill="#7b3fb8"/><circle cx="68" cy="26" r="6" fill="#7b3fb8"/><path d="M16 60c-10 4-12 14-6 18M70 60c10 4 12 14 6 18" stroke="#7b3fb8" stroke-width="9" stroke-linecap="round" fill="none"/><ellipse cx="32" cy="100" rx="10" ry="4" fill="#5a2a8c"/><ellipse cx="54" cy="100" rx="10" ry="4" fill="#5a2a8c"/></svg>`;

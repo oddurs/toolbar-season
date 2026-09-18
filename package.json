@@ -1,0 +1,17 @@
+{
+  "name": "toolbar-season",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Internet Explorer 6, October 2005, buried in bundled toolbars.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.3.0",
+    "svelte": "^5.57.0",
+    "vite": "^8.3.0"
+  }
+}

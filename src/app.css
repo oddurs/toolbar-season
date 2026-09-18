@@ -329,3 +329,97 @@ input.box {
 body.sparkle, body.sparkle * {
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cpath d='M2 2l0 18 5-5 4 9 3-1-4-9h7z' fill='%23ff5fd2' stroke='%23000'/%3E%3Cpath d='M22 4l1 3 3 1-3 1-1 3-1-3-3-1 3-1z' fill='%23ffe000'/%3E%3C/svg%3E") 2 2, auto !important;
 }
+
+/* ---------- framework-era additions ---------- */
+.linkish { border: 0; background: none; padding: 0; color: var(--link); text-decoration: underline; cursor: pointer; font: inherit; }
+.smiley-btn { border: 0; background: none; padding: 0; display: inline-flex; cursor: pointer; }
+.side-q { width: 100%; box-sizing: border-box; margin: 4px 0; }
+.page.hl :is(p, a, b, span, td, div, li, h1) { background: #ff0; }
+.page.hl :is(p, td, li):nth-child(2n) { background: #0ff; }
+.page.hl :is(a, b):nth-child(3n) { background: #f9f; }
+.buddy { right: 40px; bottom: 70px; }
+.buddy-body { border: 0; background: none; padding: 0; cursor: pointer; display: block; }
+.addons { max-height: 240px; overflow: auto; background: #fff; border: 1px solid #7f9db9; }
+.addons table { border-collapse: collapse; width: 100%; font: 11px var(--ui); }
+.addons th { background: var(--luna-face); text-align: left; padding: 3px; position: sticky; top: 0; }
+.addons td { padding: 3px; vertical-align: top; }
+.about-banner { background: linear-gradient(90deg, #1d4fa8, #5b9bf0); color: #fff; padding: 12px; margin: -12px -12px 0; font: bold 20px "Trebuchet MS", sans-serif; }
+.crash-top { background: #fff; margin: -12px -12px 0; padding: 12px; display: flex; gap: 10px; align-items: flex-start; }
+.crash-top b { flex: 1; }
+textarea.source { width: 100%; height: 220px; box-sizing: border-box; font: 12px "Lucida Console", Monaco, monospace; }
+
+/* pop-up ads */
+.ad-winner { background: repeating-linear-gradient(45deg, #ff0 0 14px, #fc0 14px 28px); padding: 12px; text-align: center; font-family: Impact, "Arial Black", sans-serif; }
+.ad-winner .big { font-size: 24px; color: #c00; text-shadow: 2px 2px #fff; }
+.ad-winner .sub { font: bold 14px Arial, sans-serif; margin: 6px 0; }
+.ad-winner .fine { font: 9px Arial, sans-serif; color: #333; margin-top: 6px; }
+.ad-monkey { background: #036; color: #fff; font: bold 13px Arial, sans-serif; padding: 8px; text-align: center; }
+.ad-monkey .arena { position: relative; height: 84px; background: #9cf; margin-top: 6px; overflow: hidden; cursor: crosshair; }
+.ad-monkey .monkey { position: absolute; top: 10px; left: 0; width: 50px; height: 50px; padding: 0; border: 0; background: none; transition: left .5s linear; cursor: pointer; }
+.ad-singles { padding: 12px; font: 13px Arial, sans-serif; background: #fde; text-align: center; }
+.ad-scare { padding: 12px; font: 12px Arial, sans-serif; background: #fff; }
+.ad-fish { padding: 10px; font: 12px Arial, sans-serif; background: linear-gradient(#0af, #036); color: #fff; text-align: center; }
+.ad-mail { padding: 10px; font: 12px Verdana, sans-serif; }
+.ad-im { padding: 6px; font: 12px Arial, sans-serif; background: #fff; }
+.im-log { height: 110px; overflow: auto; border: 1px solid #7f9db9; padding: 4px; }
+.im-send { display: flex; gap: 4px; margin-top: 4px; }
+.im-send .box { flex: 1; }
+.im-send .xpbtn { min-width: 50px; }
+
+/* pages */
+.portal-head { background: linear-gradient(#ffe066, #ffb000); padding: 8px 12px; border-bottom: 3px solid #c00; font-family: Arial, sans-serif; }
+.portal-head b { font-size: 22px; color: #c00; font-style: italic; }
+.portal-head span { color: #600; font-size: 11px; }
+.portal-body { padding: 10px 12px; font: 12px Arial, sans-serif; }
+.portal-body form { margin: 0 0 10px; }
+.portal-body input { width: 260px; font-size: 13px; }
+.portal-body table { border-collapse: collapse; font-size: 12px; }
+.portal-body td { vertical-align: top; }
+.portal-body .hot { border: 1px solid #fc0; background: #fffbe0; }
+.portal-body .popular { border: 1px solid #9cf; background: #eef6ff; }
+.portal-body .winner { border: 2px dashed #c00; text-align: center; cursor: pointer; }
+.portal-body p { margin: 10px 0 4px; }
+.fine { color: #888; font-size: 10px; }
+
+.results { padding: 8px 12px; font: 13px Arial, sans-serif; }
+.results-head { border-bottom: 1px solid #36c; padding-bottom: 4px; margin-bottom: 6px; }
+.results-head b:first-child { font-size: 18px; color: #36c; margin-right: 6px; }
+.results-head span { font-size: 11px; color: #555; }
+.results .sponsored { background: #fff8dc; border: 1px solid #f0e0a0; padding: 4px 8px; margin-bottom: 8px; }
+.results .tiny { font-size: 10px; color: #888; }
+.results .hit { margin: 5px 0; }
+.results .desc { font-size: 12px; }
+.results .green { color: #080; font-size: 11px; }
+
+.kev {
+  background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='5' cy='7' r='.8' fill='white'/%3E%3Ccircle cx='28' cy='22' r='.6' fill='white'/%3E%3Ccircle cx='16' cy='35' r='1' fill='yellow'/%3E%3C/svg%3E");
+  color: #0f0; font-family: "Comic Sans MS", "Comic Sans", "Chalkboard SE", cursive;
+  text-align: center; padding: 10px; min-height: 100%; box-sizing: border-box;
+}
+.kev .marquee { overflow: hidden; white-space: nowrap; color: #ff0; font-size: 20px; font-weight: bold; }
+.kev .marquee span { display: inline-block; padding-left: 100%; animation: tick 9s linear infinite; }
+.kev button { border: 0; background: none; padding: 0; color: #0ff; text-decoration: underline; font: inherit; cursor: pointer; }
+.kev .note { color: #fff; min-height: 1.3em; }
+.kev .counter { font-family: "Courier New", monospace; }
+.kev .counter span { background: #222; color: #f00; padding: 1px 4px; border: 1px inset #555; }
+.kev .ring { color: #888; font-size: 11px; }
+.kev .fine { color: #666; }
+
+.forum-head { background: #5c7099; color: #fff; padding: 6px 10px; font: bold 15px Verdana, sans-serif; }
+.forum-head span { font: 11px Verdana, sans-serif; opacity: .8; }
+.forum-body { padding: 8px 10px; }
+.forum .thread { font: bold 13px Verdana, sans-serif; margin-bottom: 6px; }
+.forum table { border-collapse: collapse; width: 100%; }
+.forum td { vertical-align: top; border: 1px solid #c3cfe0; padding: 6px; }
+.forum .who { width: 120px; background: #f2f5fa; font: 11px Verdana, sans-serif; }
+.forum .who.alt { background: #e8eef7; }
+.forum .who b { color: #22229c; }
+.forum .who span { color: #666; }
+.forum .body { background: #fff; font: 12px Verdana, sans-serif; }
+.forum .hjt { font: 11px "Courier New", monospace; background: #f8f8f8; border: 1px solid #ddd; padding: 4px; margin-top: 4px; max-height: 140px; overflow: auto; }
+
+.cannot { padding: 14px 18px; font: 11px var(--ui); max-width: 560px; }
+.cannot-head { display: flex; gap: 10px; align-items: center; }
+.cannot h1 { font: bold 17px var(--ui); margin: 0; }
+.cannot hr { border: 0; border-top: 1px solid #ccc; }
+.cannot ul { padding-left: 18px; }
