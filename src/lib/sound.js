@@ -1,5 +1,7 @@
 // Synthesized sounds: IE's navigation click and a 56k modem connecting.
 // Nothing plays until the user has interacted with the page.
+import { ui } from "./state.svelte.js";
+
 let ctx;
 const audio = () => (ctx ||= new (window.AudioContext || window.webkitAudioContext)());
 
@@ -33,7 +35,35 @@ function noise(start, dur, gain = 0.03, band = 1800) {
   src.start(start);
 }
 
+// Runs fn(ctx, now) only when sound is allowed and running.
+function play(fn) {
+  if (ui.muted) return;
+  try { const c = audio(); if (c.state === "running") fn(c, c.currentTime); } catch {}
+}
+
+// Windows XP Ding: a bright bell with a quick decay.
+export const ding = () => play((c, t) => {
+  for (const [f, g] of [[1318, 0.06], [2637, 0.02], [1976, 0.015]]) bell(c, f, t, 0.9, g);
+});
+// Windows XP Critical Stop: a low, descending chord.
+export const chord = () => play((c, t) => {
+  [[523, 0], [392, 0.09], [311, 0.18]].forEach(([f, dt]) => bell(c, f, t + dt, 0.7, 0.045));
+});
+// SP2's pop-up blocked sound: a tiny, dry tick.
+export const blocked = () => play((c, t) => { tone([3200], t, 0.012, 0.05, "square"); tone([1800], t + 0.02, 0.015, 0.03, "square"); });
+
+function bell(c, f, t, dur, gain) {
+  const o = c.createOscillator(), g = c.createGain();
+  o.frequency.value = f;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(gain, t + 0.005);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(c.destination);
+  o.start(t); o.stop(t + dur);
+}
+
 export function navClick() {
+  if (ui.muted) return;
   try {
     const c = audio();
     if (c.state !== "running") return;
@@ -45,6 +75,7 @@ const DTMF = { 1: [697, 1209], 2: [697, 1336], 3: [697, 1477], 4: [770, 1209], 5
 
 // Dial tone, the number, then the handshake. Returns its length in seconds.
 export function modem(number = "5550142") {
+  if (ui.muted) return 0;
   try {
     const c = audio();
     if (c.state !== "running") return 0;

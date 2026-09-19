@@ -472,3 +472,37 @@ textarea.source { width: 100%; height: 220px; box-sizing: border-box; font: 12px
 .ham-row { display: flex; justify-content: center; }
 .ham .h { width: 40px; height: 40px; display: inline-block; animation: dance .48s steps(2) infinite; }
 @keyframes dance { 50% { transform: translateY(-6px) rotate(8deg) scaleX(-1); } }
+
+/* ---------- round four ---------- */
+.sound-toggle {
+  position: fixed; left: 16px; bottom: 4px; z-index: 5;
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.45); border-radius: 3px;
+  color: #fff; font: 11px var(--ui); padding: 1px 6px; cursor: pointer;
+  text-shadow: 1px 1px 1px rgba(0,0,0,.6);
+}
+.sound-toggle:hover { background: rgba(255,255,255,.3); }
+.sound-toggle svg { width: 14px; height: 14px; }
+
+.arp { display: flex; min-height: 300px; background: #fff; border: 1px solid #7f9db9; }
+.arp nav { width: 120px; flex: none; background: linear-gradient(#6f8fc9, #3d63b1); display: flex; flex-direction: column; gap: 2px; padding: 6px 4px; }
+.arp nav span { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 4px; color: #fff; text-align: center; border: 1px solid transparent; border-radius: 3px; }
+.arp nav span.on { background: rgba(255,255,255,.22); border-color: rgba(255,255,255,.5); }
+.arp nav svg { width: 30px; height: 30px; }
+.arp-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.arp-top { padding: 6px 8px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; }
+.arp-list { flex: 1; overflow: auto; max-height: 320px; }
+.arp-row { padding: 4px 8px; border-bottom: 1px solid #f0f0f0; cursor: default; }
+.arp-row.sel { background: #dde7fb; }
+.arp-line { display: flex; align-items: center; gap: 6px; }
+.arp-line svg { width: 16px; height: 16px; flex: none; }
+.arp-size { margin-left: auto; color: #555; }
+.arp-detail { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center; padding: 6px 0 4px 22px; }
+.arp-detail .xpbtn { margin-left: auto; }
+.arp-empty { padding: 20px; color: #555; text-align: center; }
+.addons-hint { margin-right: auto; align-self: center; }
+.survey { display: flex; flex-direction: column; gap: 4px; padding: 4px 0; }
+.offer { background: #fff8dc; border: 1px solid #f0c040; padding: 8px 10px; }
+.offer p { margin: 4px 0 0; }
+.nothanks { text-align: right; font-size: 10px; }
+.nothanks .linkish { color: #999; font-size: 10px; }

@@ -3,7 +3,7 @@
 import { ui, isOn, isInstalled, adware, hijacker, KEV_URL, HOME_URL, HAMSTER_URL, SYNERGY_URL } from "./state.svelte.js";
 import { ALL_BARS, EXTRA_BARS, byId } from "./toolbars.js";
 import { resolve, normalize, searchUrl, ENGINES } from "./pages.js";
-import { navClick } from "./sound.js";
+import { navClick, ding, chord, blocked } from "./sound.js";
 export { wakeAudio } from "./sound.js";
 
 export const rand = (a, b) => a + Math.random() * (b - a);
@@ -17,6 +17,7 @@ export function showInfo(text, action = null, icon = "shield") {
 }
 
 export function popupInfo() {
+  blocked();
   showInfo("Pop-up blocked. To see this pop-up or additional options click here...", e => openMenu(e.clientX, e.clientY, [
     { label: "Temporarily Allow Pop-ups", fn: () => { for (let i = 0; i < 6; i++) setTimeout(() => openPop(pick(["winner", "monkey", "scare", "screensaver", "singles", "mail"])), i * 180); } },
     { label: "Always Allow Pop-ups from This Site...", fn: () => alertDlg("Pop-ups from <b>everywhere</b> are now allowed. That's what you meant, right?") },
@@ -87,7 +88,7 @@ export function closeBar(id, { silent = false } = {}) {
   if (b.builtin || !b.respawn) return;
   if (!silent) setStatus(`${b.name} closed. (For now.)`);
   respawns[id] = setTimeout(() => {
-    if (isOn(id)) return;
+    if (isOn(id) || ui.uninstalled[id]) return;
     ui.on[id] = true; flash(id);
     showInfo(`${b.name} was turned back on by its Update Service, to keep your browsing experience great.`, () => openDialog("addons"), "warn");
   }, (b.respawn + rand(0, b.respawn * 0.5)) * 1000);
@@ -96,11 +97,30 @@ export function openBar(id) { clearTimeout(respawns[id]); ui.on[id] = true; ui.i
 export const toggleBar = id => (isOn(id) ? closeBar(id) : openBar(id));
 
 export function installBar(b, msg) {
+  delete ui.uninstalled[b.id];
   if (!ui.order.includes(b.id)) ui.order.splice(ui.order.indexOf("coolbar"), 0, b.id);
   load(() => {
     ui.installed[b.id] = true; ui.on[b.id] = true; flash(b.id);
     showInfo(msg || `${b.name} was installed successfully. Thank you for choosing ${b.name}!`, () => openDialog("addons"), "info");
   });
+}
+
+// Removed for real, through Add or Remove Programs. Some leave an
+// "Update Service" behind that quietly puts them back.
+export function uninstall(id) {
+  const b = byId(id);
+  clearTimeout(respawns[id]);
+  ui.on[id] = false;
+  ui.installed[id] = false;
+  ui.uninstalled[id] = true;
+  if (!b.respawn || Math.random() > 0.3) return false;
+  respawns[id] = setTimeout(() => {
+    if (!ui.uninstalled[id]) return;
+    delete ui.uninstalled[id];
+    ui.installed[id] = true; ui.on[id] = true; flash(id);
+    showInfo(`${b.name} Update Service noticed ${b.name} was missing, and reinstalled it for you.`, () => openDialog("arp"), "warn");
+  }, rand(50000, 80000));
+  return true;
 }
 
 export function moveBar(id, beforeId) {
@@ -125,7 +145,10 @@ export function closeDialog(id, why) {
 }
 export function raise(id) { const d = ui.dialogs.find(d => d.id === id); if (d) d.z = ++z; }
 
-export const alertDlg = (msg, { title = "Microsoft Internet Explorer", icon = "info" } = {}) => openDialog("alert", { msg, title, icon });
+export function alertDlg(msg, { title = "Microsoft Internet Explorer", icon = "info" } = {}) {
+  (icon === "err" ? chord : ding)();
+  return openDialog("alert", { msg, title, icon });
+}
 
 export function activeX(bar, nag = 0) {
   if (!bar || isInstalled(bar.id)) bar = EXTRA_BARS.find(b => !b.manual && !isInstalled(b.id));
@@ -240,7 +263,7 @@ function adTick() {
 
 // New toolbars keep arriving on their own, until there are none left to arrive.
 function creep() {
-  const next = EXTRA_BARS.find(b => !b.manual && !isInstalled(b.id));
+  const next = EXTRA_BARS.find(b => !b.manual && !isInstalled(b.id) && !ui.uninstalled[b.id]);
   if (!next) return;
   if (ui.crashed || ui.dialogs.length) return setTimeout(creep, 8000);
   installBar(next, `${next.name} was installed automatically as part of a recommended update. No action is needed.`);
@@ -275,8 +298,14 @@ export function trackClean() {
 }
 
 // The session starts offline, at the dial-up prompt.
+export function setMuted(m) {
+  ui.muted = m;
+  try { localStorage.setItem("toolbar-season:muted", m ? "1" : ""); } catch {}
+}
+
 export function start() {
   try { ui.bestClean = +localStorage.getItem("toolbar-season:best") || 0; } catch {}
+  try { ui.muted = !!localStorage.getItem("toolbar-season:muted"); } catch {}
   ui.route = { page: resolve("about:blank").page, props: {}, key: 0 };
   ui.url = "about:blank";
   ui.title = "about:blank - Microsoft Internet Explorer";

@@ -13,8 +13,10 @@
   import Source from "./dialogs/Source.svelte";
   import Smiley from "./dialogs/Smiley.svelte";
   import DialUp from "./dialogs/DialUp.svelte";
+  import Arp from "./dialogs/Arp.svelte";
+  import Uninstall from "./dialogs/Uninstall.svelte";
 
-  const KINDS = { alert: Alert, activex: ActiveX, pop: Pop, scan: Scan, addons: Addons, options: Options, about: About, why: Why, crash: Crash, source: Source, smiley: Smiley, dialup: DialUp };
+  const KINDS = { alert: Alert, activex: ActiveX, pop: Pop, scan: Scan, addons: Addons, options: Options, about: About, why: Why, crash: Crash, source: Source, smiley: Smiley, dialup: DialUp, arp: Arp, uninstall: Uninstall };
 </script>
 
 {#each ui.dialogs as dlg (dlg.id)}

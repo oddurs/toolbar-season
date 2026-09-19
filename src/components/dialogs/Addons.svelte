@@ -4,7 +4,7 @@
   import { I } from "../../lib/icons.js";
   import { isOn, isInstalled } from "../../lib/state.svelte.js";
   import { ALL_BARS } from "../../lib/toolbars.js";
-  import { openBar, closeBar } from "../../lib/actions.js";
+  import { openBar, closeBar, openDialog } from "../../lib/actions.js";
 
   let { dlg, close } = $props();
   const rows = $derived(ALL_BARS.filter(b => !b.builtin && isInstalled(b.id)));
@@ -29,5 +29,9 @@
       </tbody>
     </table>
   </div>
-  <div class="btns"><button class="xpbtn def" onclick={() => close("ok")}>OK</button></div>
+  <div class="btns">
+    <span class="muted addons-hint">Disabled add-ons turn themselves back on. To remove one for good, uninstall it.</span>
+    <button class="xpbtn" onclick={() => openDialog("arp")}>Uninstall...</button>
+    <button class="xpbtn def" onclick={() => close("ok")}>OK</button>
+  </div>
 </Dialog>

@@ -10,6 +10,7 @@
 </script>
 
 {#each Object.keys(MENUS) as name}
-  <button class="mi" class:open={ui.menu?.owner === name} onclick={e => onclick(name, e)} onmouseenter={e => onmouseenter(name, e)}><u>{name[0]}</u>{name.slice(1)}</button>
+  {@const k = name === "Favorites" ? 1 : 0}
+  <button class="mi" data-menu={name} class:open={ui.menu?.owner === name} onclick={e => onclick(name, e)} onmouseenter={e => onmouseenter(name, e)}>{name.slice(0, k)}<u>{name[k]}</u>{name.slice(k + 1)}</button>
 {/each}
 <span class="brand">provided by Dell</span>

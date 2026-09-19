@@ -1,7 +1,7 @@
 <script>
   import { ui, isOn } from "../../lib/state.svelte.js";
   import { ALL_BARS } from "../../lib/toolbars.js";
-  import { act } from "../../lib/actions.js";
+  import { act, openDialog } from "../../lib/actions.js";
 
   const bars = ALL_BARS.filter(b => !b.builtin && isOn(b.id));
   const log = bars.map(b => `O3 - Toolbar: ${b.name} - {${(b.id + "0000-4f2a-9c0b-2231").toUpperCase()}} - C:\\PROGRA~1\\${b.name.replace(/\W/g, "").slice(0, 8).toUpperCase()}\\${b.id}bar.dll`);
@@ -31,7 +31,7 @@
       {@render post("fox_fan", "Member<br>Posts: 611", true, p4)}
       {#snippet p5()}just format c: and reinstall windows lol{/snippet}
       {@render post("xX_l33t_Xx", "Banned", false, p5)}
-      {#snippet p6()}That is a nasty infection. Run <button class="linkish" onclick={act.scan}>SpyScrub SE</button> and then Tools › Manage Add-ons. Post a new log afterwards.{/snippet}
+      {#snippet p6()}That is a nasty infection. Run <button class="linkish" onclick={act.scan}>SpyScrub SE</button>, then uninstall each one from <button class="linkish" onclick={() => openDialog("arp")}>Add or Remove Programs</button>. Scanning only hides them. Post a new log afterwards.{/snippet}
       {@render post("Mod_Steve", "Moderator<br>Posts: 14,883", true, p6)}
       {#snippet p7()}UPDATE: I ran the scan and it removed everything!!! Thank you so much!!!<br /><br />UPDATE 2: they are back. Also there is a purple monkey now.{/snippet}
       {@render post("sk8rmom72", "Junior Member<br>Posts: 5", false, p7)}

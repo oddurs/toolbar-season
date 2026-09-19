@@ -35,6 +35,9 @@ export const I = {
   cart: `<svg viewBox="0 0 16 16"><path d="M1 2h2.5l2 8h8l1.5-5.5H4.4" fill="none" stroke="#1d4fa8" stroke-width="1.4" stroke-linejoin="round"/><circle cx="6.5" cy="13" r="1.3" fill="#1d4fa8"/><circle cx="12" cy="13" r="1.3" fill="#1d4fa8"/></svg>`,
   heart: `<svg viewBox="0 0 16 16"><path d="M8 14S1.5 9.8 1.5 5.5A3.2 3.2 0 0 1 8 4a3.2 3.2 0 0 1 6.5 1.5C14.5 9.8 8 14 8 14z" fill="#e0306a"/></svg>`,
   person: `<svg viewBox="0 0 16 16"><circle cx="8" cy="5" r="3" fill="#fcd12a" stroke="#8a6200" stroke-width=".7"/><path d="M2.5 15c0-4 2.5-6 5.5-6s5.5 2 5.5 6z" fill="#3fae24"/></svg>`,
+  speaker: `<svg viewBox="0 0 16 16"><path d="M2 6h3l4-3v10L5 10H2z" fill="#e9e5d6" stroke="#333" stroke-width=".8"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5M12.5 3.5a6 6 0 0 1 0 9" fill="none" stroke="#333" stroke-width="1"/></svg>`,
+  muted: `<svg viewBox="0 0 16 16"><path d="M2 6h3l4-3v10L5 10H2z" fill="#e9e5d6" stroke="#333" stroke-width=".8"/><circle cx="12.5" cy="8" r="3" fill="#d8321c"/><path d="m11 9.5 3-3" stroke="#fff" stroke-width="1.2"/></svg>`,
+  cd: `<svg viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="12" rx="1" fill="#e9e5d6" stroke="#7a7563"/><circle cx="10" cy="8" r="4.2" fill="#cfd8e6" stroke="#6b7a8f" stroke-width=".6"/><circle cx="10" cy="8" r="1.2" fill="#fff" stroke="#6b7a8f" stroke-width=".5"/><rect x="3" y="4" width="3" height="8" fill="#3b78e7"/></svg>`,
   down: `<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#1d7fd8"/><path d="M6.5 3.5h3v4.5H12L8 12.5 4 8h2.5z" fill="#fff"/></svg>`,
 };
 

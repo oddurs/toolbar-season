@@ -11,6 +11,9 @@ Things to try:
 - Drag toolbars around by their grips.
 - **Tools › SpyScrub SE Scan** removes every toolbar. For a while.
 - **Tools › Manage Add-ons** shows how you "agreed" to each one.
+- **Tools › Add or Remove Programs** removes them for good, if you can get through the uninstallers.
+- Right-click the page. Each toolbar adds itself to the menu.
+- Alt+F, Alt+V, Alt+T and the rest open the menus.
 - Click an ad, punch the monkey, or say "Don't Install" to a security prompt.
 - Try changing your home page in **Tools › Internet Options**.
 - Type in the address bar and see what AutoComplete suggests.

@@ -45,6 +45,8 @@ export const ui = $state({
   viewPct: 0,
 
   connected: false,
+  uninstalled: {}, // removed through Add or Remove Programs
+  muted: false,
   squeezeOffered: false,
   cleanSince: null, // when the last third-party toolbar went away
   cleanFor: 0,
