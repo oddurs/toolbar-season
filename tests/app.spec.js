@@ -131,6 +131,20 @@ test("a long press opens the page menu on touch screens", async ({ page, isMobil
   await expect(page.locator(".menu .it.spons")).toHaveCount(9);
 });
 
+test("a submenu never covers the item that opened it", async ({ page }) => {
+  await connect(page);
+  await page.locator('.mi[data-menu="View"]').click();
+  const parent = page.locator(".menu").first().locator(".it", { hasText: "Toolbars" });
+  await parent.click();
+  await expect(page.locator(".menu")).toHaveCount(2);
+  // Every part of the tapped item must still be the item, not the submenu on top of it.
+  const b = await parent.boundingBox();
+  for (const x of [b.x + 6, b.x + b.width / 2, b.x + b.width - 10]) {
+    const hit = await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest(".it")?.textContent, [x, b.y + b.height / 2]);
+    expect(hit).toContain("Toolbars");
+  }
+});
+
 test("menus work from the keyboard", async ({ page }) => {
   await connect(page);
   await page.keyboard.press("Alt+KeyV");

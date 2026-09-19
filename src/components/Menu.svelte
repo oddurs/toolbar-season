@@ -4,7 +4,9 @@
   import { closeMenu } from "../lib/actions.js";
   import Menu from "./Menu.svelte";
 
-  let { items, x, y, onleave = null, onswitch = null, focus = true } = $props();
+  // `from` is the parent item's box, for submenus: they open to its right,
+  // or to its left if there's no room, or below it on a screen too narrow for either.
+  let { items, x, y, from = null, onleave = null, onswitch = null, focus = true } = $props();
   let el = $state();
   let pos = $state({ left: -9999, top: 0 });
   let sub = $state(null); // { i, x, y, items, keyboard }
@@ -16,7 +18,12 @@
   // Keep the menu on screen, and take keyboard focus.
   $effect(() => {
     const r = el.getBoundingClientRect();
-    pos = { left: Math.max(0, Math.min(x, innerWidth - r.width - 2)), top: Math.max(0, Math.min(y, innerHeight - r.height - 2)) };
+    let left = x, top = y;
+    if (from && left + r.width > innerWidth) {
+      left = from.left - r.width + 2;
+      if (left < 0) { left = innerWidth - r.width - 2; top = from.bottom; }
+    }
+    pos = { left: Math.max(0, Math.min(left, innerWidth - r.width - 2)), top: Math.max(0, Math.min(top, innerHeight - r.height - 2)) };
     if (focus) el.focus({ preventScroll: true });
   });
 
@@ -24,7 +31,7 @@
     const it = list[i];
     if (!it?.items) return (sub = null);
     const r = el.querySelector(`[data-i="${i}"]`).getBoundingClientRect();
-    sub = { i, x: r.right - 2, y: r.top - 3, items: it.items, keyboard };
+    sub = { i, x: r.right - 2, y: r.top - 3, items: it.items, keyboard, from: { left: r.left, bottom: r.bottom } };
   }
   function choose(i, e) {
     const it = list[i];
@@ -84,5 +91,5 @@
 </div>
 
 {#if sub}
-  {#key sub.i}<Menu items={sub.items} x={sub.x} y={sub.y} onleave={back} {onswitch} focus={sub.keyboard} />{/key}
+  {#key sub.i}<Menu items={sub.items} x={sub.x} y={sub.y} from={sub.from} onleave={back} {onswitch} focus={sub.keyboard} />{/key}
 {/if}
