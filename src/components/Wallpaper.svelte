@@ -3,6 +3,7 @@
   // Azure sky, soft cumulus, one rolling green hill. Seeded, so it looks the
   // same every time, and redrawn to fit the screen.
   import { onMount } from "svelte";
+  import { ui } from "../lib/state.svelte.js";
 
   let canvas = $state();
 
@@ -137,4 +138,5 @@
   });
 </script>
 
-<canvas class="wallpaper" bind:this={canvas} aria-hidden="true"></canvas>
+<canvas class="wallpaper" bind:this={canvas} aria-hidden="true" hidden={ui.wallpaper !== "bliss"}></canvas>
+{#if ui.wallpaper !== "bliss"}<div class="wallpaper wp-{ui.wallpaper}" aria-hidden="true"></div>{/if}

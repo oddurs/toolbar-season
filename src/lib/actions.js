@@ -153,6 +153,7 @@ export function installBar(b, msg, { self = false } = {}) {
   if (!ui.order.includes(b.id)) ui.order.splice(ui.order.indexOf("coolbar"), 0, b.id);
   load(() => {
     ui.installed[b.id] = true; ui.on[b.id] = true; flash(b.id);
+    if (b.id === "speeddr") setTimeout(hijackWallpaper, TEST ? 0 : 3000);
     showInfo(msg || `${b.name} was installed successfully. Thank you for choosing ${b.name}!`, () => openDialog("addons"), "info");
     react("installed", b.name);
   });
@@ -168,6 +169,10 @@ export function uninstall(id) {
   ui.uninstalled[id] = true;
   ui.stats.removed++;
   id === "bonzibar" ? banish() : react("removed", b.name);
+  if (id === "speeddr" && ui.wallpaper === "infected") {
+    ui.wallpaper = "bliss";
+    showInfo("Your desktop background has been restored.", null, "info");
+  }
   if (!b.respawn || TEST || Math.random() > 0.3) return false;
   respawns[id] = setTimeout(() => {
     if (!ui.uninstalled[id]) return;
@@ -242,6 +247,30 @@ export function openPop(kind, { exit = false, under = false } = {}) {
     },
   });
 }
+
+// ---------------- the desktop ----------------
+// 2005's desktop hijackers replaced your wallpaper with a warning about the
+// spyware they were, and locked Display Properties so you couldn't change it back.
+export function hijackWallpaper() {
+  if (!isInstalled("speeddr")) return;
+  ui.wallpaper = "infected";
+  showInfo("PC Speed Doctor changed your desktop background to warn you about spyware. It is the spyware.", () => openDialog("display"), "warn");
+}
+export function setBackground() {
+  if (ui.wallpaper === "infected") return alertDlg("Your desktop background is locked by PC Speed Doctor for your protection.", { icon: "warn" });
+  ui.wallpaper = "ad";
+  showInfo("The picture was set as your desktop background. It's an ad. To change it back, right-click the desktop and choose Properties.", null, "info");
+}
+export const desktopMenu = () => [
+  { label: "Arrange Icons By", items: [{ label: "Name" }, { label: "Size" }, { label: "Type" }, { label: "Modified" }] },
+  { label: "Refresh" },
+  "-",
+  { label: "Paste", dis: true }, { label: "Paste Shortcut", dis: true },
+  "-",
+  { label: "New", items: [{ label: "Folder" }, { label: "Shortcut" }, "-", { label: "Text Document" }] },
+  "-",
+  { label: "Properties", fn: () => openDialog("display") },
+];
 
 // The title bar's close button: IE goes away and leaves an icon on the desktop.
 export function closeIE() {
@@ -424,6 +453,8 @@ if (TEST && typeof window !== "undefined") {
     installAll: () => EXTRA_BARS.forEach(b => { if (!ui.order.includes(b.id)) ui.order.splice(ui.order.indexOf("coolbar"), 0, b.id); ui.installed[b.id] = true; ui.on[b.id] = true; }),
     removeAll: () => adware().forEach(b => uninstall(b.id)),
     buddy: () => summon(),
+    install: id => installBar(byId(id)),
+    uninstall: id => uninstall(id),
   };
 }
 

@@ -384,3 +384,37 @@ test.describe("BuddyBonz", () => {
     await expect(buddy(page)).toHaveCount(0);
   });
 });
+
+test.describe("the desktop wallpaper", () => {
+  test.skip(({ isMobile }) => isMobile, "On a phone the window covers the desktop.");
+  const desktopMenu = async page => {
+    await page.mouse.click(20, 400, { button: "right" });
+    await page.locator(".menu .it", { hasText: "Properties" }).click();
+  };
+
+  test("PC Speed Doctor hijacks it, and locks Display Properties until it's uninstalled", async ({ page }) => {
+    await connect(page);
+    await expect(page.locator("canvas.wallpaper")).toBeVisible();
+    await page.evaluate(() => window.__season.install("speeddr"));
+    await expect(page.locator(".wallpaper.wp-infected")).toBeVisible();
+    await expect(page.locator("canvas.wallpaper")).toBeHidden();
+    await desktopMenu(page);
+    await expect(page.getByRole("dialog", { name: "Display Properties" })).toContainText("disabled by your administrator");
+    await page.keyboard.press("Escape");
+    await page.evaluate(() => window.__season.uninstall("speeddr"));
+    await expect(page.locator("canvas.wallpaper")).toBeVisible();
+  });
+
+  test("Set as Background tiles an ad, and Display Properties puts Bliss back", async ({ page }) => {
+    await connect(page);
+    await page.locator(".page").click({ button: "right", position: { x: 300, y: 100 } });
+    await page.locator(".menu .it", { hasText: "Set as Background" }).click();
+    await expect(page.locator(".wallpaper.wp-ad")).toBeVisible();
+    await desktopMenu(page);
+    const props = page.getByRole("dialog", { name: "Display Properties" });
+    await props.getByLabel("Background:").selectOption("bliss");
+    await props.getByRole("button", { name: "OK" }).click();
+    await expect(page.locator("canvas.wallpaper")).toBeVisible();
+    await expect(page.locator(".wallpaper.wp-ad")).toHaveCount(0);
+  });
+});

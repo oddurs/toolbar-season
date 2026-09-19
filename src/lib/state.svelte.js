@@ -50,6 +50,7 @@ export const ui = $state({
   viewPct: 0,
 
   connected: false,
+  wallpaper: "bliss", // "bliss" | "none" | "infected" (PC Speed Doctor's) | "ad" (Set as Background)
   rect: null, // { x, y, w, h } once the window has been moved or resized
   closed: false,
   ieOnDesktop: false, // the desktop icon appears the first time you close IE

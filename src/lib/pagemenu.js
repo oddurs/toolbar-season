@@ -1,7 +1,7 @@
 // IE's right-click menu for a page, plus whatever each installed toolbar
 // added to it. The more toolbars, the longer the menu.
 import { ui, isOn } from "./state.svelte.js";
-import { act, alertDlg, doSearch, openDialog, openPop } from "./actions.js";
+import { act, alertDlg, doSearch, openDialog, openPop, setBackground } from "./actions.js";
 
 const selection = () => getSelection()?.toString().trim().slice(0, 60) || "";
 
@@ -27,7 +27,7 @@ export function pageMenu() {
     { label: "Forward", dis: ui.idx >= ui.hist.length - 1, fn: act.fwd },
     "-",
     { label: "Save Background As...", fn: () => alertDlg("Saving requires the <b>SaveIt Pro Toolbar</b>.", { icon: "warn" }) },
-    { label: "Set as Background", fn: () => alertDlg("Your desktop background is now a pop-up ad.") },
+    { label: "Set as Background", fn: setBackground },
     { label: "Copy Background" },
     "-",
     { label: "Select All", fn: () => getSelection().selectAllChildren(document.querySelector(".page")) },

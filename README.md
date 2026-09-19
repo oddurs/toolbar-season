@@ -22,6 +22,7 @@ Every name in it is a parody. Sound is on by default; the modem does the whole h
 - Tools › Add or Remove Programs, and the uninstaller's exit survey.
 - Right-click the page: every toolbar adds itself to the menu.
 - Kev's homepage (sign the guestbook, play the MIDI), the TechGuyz help thread (post a reply), Windows Update, Hotmoil, a Skip Intro site, and The Hamster Party.
+- Right-click the desktop. Then install PC Speed Doctor and try again.
 - Drag and resize the window. Some ads open behind it. Close IE and it leaves an icon on the desktop.
 
 ## Status

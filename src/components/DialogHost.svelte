@@ -20,8 +20,9 @@
   import Ending from "./dialogs/Ending.svelte";
   import Download from "./dialogs/Download.svelte";
   import Password from "./dialogs/Password.svelte";
+  import Display from "./dialogs/Display.svelte";
 
-  const KINDS = { alert: Alert, activex: ActiveX, pop: Pop, scan: Scan, addons: Addons, options: Options, about: About, why: Why, crash: Crash, source: Source, smiley: Smiley, dialup: DialUp, arp: Arp, uninstall: Uninstall, mixed: Mixed, scripterror: ScriptError, ending: Ending, download: Download, password: Password };
+  const KINDS = { alert: Alert, activex: ActiveX, pop: Pop, scan: Scan, addons: Addons, options: Options, about: About, why: Why, crash: Crash, source: Source, smiley: Smiley, dialup: DialUp, arp: Arp, uninstall: Uninstall, mixed: Mixed, scripterror: ScriptError, ending: Ending, download: Download, password: Password, display: Display };
 </script>
 
 {#each ui.dialogs as dlg (dlg.id)}
