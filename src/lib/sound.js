@@ -75,11 +75,13 @@ const DTMF = { 1: [697, 1209], 2: [697, 1336], 3: [697, 1477], 4: [770, 1209], 5
 
 // Resume audio inside the click that asked for it, and wait until it's live.
 // (Browsers only allow sound after a user gesture, and resuming is async.)
+// Some browsers never settle resume() (no sound device, strict autoplay
+// rules), so don't wait more than a moment: without sound, carry on silently.
 export async function ready() {
   if (ui.muted) return null;
   try {
     const c = audio();
-    if (c.state !== "running") await c.resume();
+    if (c.state !== "running") await Promise.race([c.resume(), new Promise(r => setTimeout(r, 800))]);
     return c.state === "running" ? c : null;
   } catch { return null; }
 }
