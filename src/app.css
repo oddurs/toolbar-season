@@ -612,7 +612,7 @@ label.chk { display: flex; gap: 4px; align-items: center; }
 body.dragging-win, body.dragging-win * { user-select: none !important; }
 body.dragging-win iframe { pointer-events: none; }
 
-.desktop { position: fixed; top: 10px; left: 8px; z-index: 0; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; flex-wrap: wrap; gap: 14px 10px; max-height: calc(100% - 50px); }
+.desktop { position: fixed; top: 10px; left: 8px; z-index: 0; }
 .desk-icon { width: 78px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 2px; border: 1px dotted transparent; background: none; color: #fff; font: 11px var(--ui); text-align: center; cursor: default; }
 .desk-icon .desk-svg { width: 32px; height: 32px; filter: drop-shadow(1px 2px 1px rgba(0,0,0,.4)); }
 .desk-icon span { padding: 0 2px; text-shadow: 1px 1px 1px #000, 0 0 2px #000; line-height: 1.25; }

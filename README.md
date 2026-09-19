@@ -20,7 +20,7 @@ Things to try:
 - Sign Kev's guestbook, and press play on his MIDI jukebox.
 - Reply to the TechGuyz thread. The moderator reads your toolbars.
 - Stay toolbar-free for a full minute.
-- Drag and resize the window. Some ads open behind it, and the toolbars left shortcuts on the desktop.
+- Drag and resize the window. Some ads open behind it.
 - Close IE with the × and reopen it from the desktop.
 - The menus work from the keyboard: Alt+letter, then the arrow keys.
 - Click an ad, punch the monkey, or say "Don't Install" to a security prompt.

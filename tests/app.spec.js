@@ -261,9 +261,8 @@ test("closing IE leaves an icon on the desktop that reopens it", async ({ page }
   await icon.dblclick();
   await expect(page.locator(".win")).toBeVisible();
   await expect(title(page)).toContainText("Home Search Portal");
-  // The adware left its own shortcuts, too.
-  await expect(page.locator(".desk-icon", { hasText: "PC Speed Doctor" })).toHaveCount(0);
-  await expect(page.locator(".desk-icon", { hasText: "Smiley Centrale" })).toHaveCount(1);
+  // IE is the only thing on the desktop.
+  await expect(page.locator(".desk-icon")).toHaveCount(1);
 });
 
 test("the progress bar fills in whole blocks", async ({ page }) => {
