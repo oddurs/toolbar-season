@@ -541,3 +541,26 @@ label.chk { display: flex; gap: 4px; align-items: center; }
 .cert-foot { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 12px; font-size: 12px; }
 .cert .sig { font: italic 16px "Brush Script MT", "Segoe Script", cursive; text-align: right; }
 .cert .sig small { font: 10px Georgia, serif; }
+
+/* ---------- round six ---------- */
+.win { z-index: 2; }
+.page a.visited { color: var(--visited); }
+.menu:focus { outline: none; }
+.balloon {
+  position: fixed; z-index: 400; width: 260px;
+  background: var(--info); border: 1px solid #000; border-radius: 7px;
+  padding: 6px 8px 8px; font: 11px var(--ui); color: #000;
+  box-shadow: 2px 3px 5px rgba(0,0,0,.35);
+  animation: pop-in .25s ease-out;
+}
+.balloon::after { content: ""; position: absolute; right: 36px; bottom: -11px; border: 11px solid transparent; border-bottom: 0; border-right: 0; border-top-color: #000; }
+.balloon::before { content: ""; position: absolute; right: 37px; bottom: -9px; z-index: 1; border: 10px solid transparent; border-bottom: 0; border-right: 0; border-top-color: var(--info); }
+.balloon-h { display: flex; align-items: center; gap: 5px; }
+.balloon-h svg { width: 16px; height: 16px; flex: none; }
+.balloon-h .band-x { position: static; translate: none; margin-left: auto; opacity: .7; }
+.balloon p { margin: 5px 0 0; line-height: 1.35; }
+@keyframes pop-in { from { opacity: 0; transform: translateY(6px); } }
+.ad-cam { background: #fff; padding: 10px; display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; align-items: center; font: 12px Arial, sans-serif; }
+.ad-cam .price { color: #c00; font: bold 18px Arial, sans-serif; }
+.ad-cam .xpbtn { grid-column: 1 / -1; justify-self: center; font-weight: bold; }
+.ad-cam .fine-w { grid-column: 1 / -1; font-size: 9px; color: #888; text-align: center; }

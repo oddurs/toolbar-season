@@ -82,6 +82,7 @@ export function go(raw, { push = true } = {}) {
     ui.title = `${r.title} - Microsoft Internet Explorer`;
     ui.highlight = false;
     ui.kevNote = "";
+    ui.visited[r.url] = true;
     ui.errors = scriptErrors(r.url);
     ui.pageErrors = ui.errors.length > 0;
     if (ui.pageErrors) setStatus("Done, but with errors on page.");
@@ -165,9 +166,10 @@ export function moveBar(id, beforeId) {
 
 // ---------------- dialogs ----------------
 let dlgId = 0, z = 300;
-export function openDialog(kind, props = {}, { x, y, onClose } = {}) {
+export function openDialog(kind, props = {}, { x, y, onClose, under = false } = {}) {
   const id = ++dlgId;
-  ui.dialogs.push({ id, kind, props, x, y, z: ++z, onClose });
+  // A pop-under sits beneath the IE window until you click it.
+  ui.dialogs.push({ id, kind, props, x, y, z: under ? 1 : ++z, onClose });
   return id;
 }
 export function closeDialog(id, why) {
@@ -189,9 +191,10 @@ export function activeX(bar, nag = 0) {
   openDialog("activex", { bar, nag });
 }
 
-export function openPop(kind, { exit = false } = {}) {
+export function openPop(kind, { exit = false, under = false } = {}) {
   const n = ui.dialogs.filter(d => d.kind === "pop").length;
-  openDialog("pop", { kind, exit }, {
+  openDialog("pop", { kind, exit, under }, {
+    under,
     x: rand(20, Math.max(40, innerWidth - 440)),
     y: rand(30, Math.max(60, innerHeight - 320)) + n * 6,
     // Closing an ad sometimes just opens another ad.
@@ -288,8 +291,11 @@ function adTick() {
   if (n && !ui.crashed) {
     ui.blocked++;
     const through = Math.random() < Math.min(0.65, n * 0.06);
-    if (through && ui.dialogs.filter(d => d.kind === "pop").length < 4) openPop(pick(["winner", "monkey", "scare", "screensaver", "singles"]));
+    const pops = ui.dialogs.filter(d => d.kind === "pop");
+    if (through && pops.length < 4) openPop(pick(["winner", "monkey", "scare", "screensaver", "singles"]));
     else popupInfo();
+    // Pop-unders pile up behind the window, where you won't see them for a while.
+    if (Math.random() < 0.5 && pops.filter(d => d.props.under).length < 4) openPop(pick(["camera", "camera", "winner", "screensaver"]), { under: true });
   }
   setTimeout(adTick, rand(14000, 26000) * (n ? 1 : 2));
 }
@@ -332,6 +338,11 @@ export function trackClean() {
 }
 
 // The session starts offline, at the dial-up prompt.
+export function dismissTip() {
+  ui.tip = false;
+  try { localStorage.setItem("toolbar-season:tip", "1"); } catch {}
+}
+
 export function setMuted(m) {
   ui.muted = m;
   try { localStorage.setItem("toolbar-season:muted", m ? "1" : ""); } catch {}
@@ -350,6 +361,7 @@ export function start() {
 let started = false;
 export function connected() {
   ui.connected = true;
+  try { if (!localStorage.getItem("toolbar-season:tip")) setTimeout(() => (ui.tip = true), 6000); } catch { setTimeout(() => (ui.tip = true), 6000); }
   showInfo("Dial-up Connection is now connected. Speed: 44.0 Kbps.", null, "info");
   go(HOME_URL);
   if (started) return;

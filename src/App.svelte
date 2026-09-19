@@ -13,6 +13,7 @@
   import Menu from "./components/Menu.svelte";
   import DialogHost from "./components/DialogHost.svelte";
   import Buddy from "./components/Buddy.svelte";
+  import Balloon from "./components/Balloon.svelte";
 
   let winEl = $state(), pageEl = $state();
   const bottomBars = $derived(bars().filter(b => b.place === "bottom" && isOn(b.id)));
@@ -39,15 +40,23 @@
 
   // Alt+F, Alt+E, Alt+V, Alt+A, Alt+T, Alt+H open the menus, as in IE.
   const MNEMONIC = { KeyF: "File", KeyE: "Edit", KeyV: "View", KeyA: "Favorites", KeyT: "Tools", KeyH: "Help" };
+  function openNamed(name) {
+    const btn = document.querySelector(`.mi[data-menu="${name}"]`);
+    if (!btn) return;
+    const r = btn.getBoundingClientRect();
+    openMenu(r.left, r.bottom, MENUS[name](), name);
+  }
   function menuKey(e) {
     const name = e.altKey && !e.ctrlKey && !e.metaKey && MNEMONIC[e.code];
     if (!name) return false;
     e.preventDefault();
-    const btn = document.querySelector(`.mi[data-menu="${name}"]`);
-    if (!btn) return true;
-    const r = btn.getBoundingClientRect();
-    openMenu(r.left, r.bottom, MENUS[name](), name);
+    openNamed(name);
     return true;
+  }
+  // Left/Right at the top level walks across the menu bar.
+  function switchMenu(d) {
+    const names = Object.keys(MENUS), at = names.indexOf(ui.menu?.owner);
+    if (at >= 0) openNamed(names[(at + d + names.length) % names.length]);
   }
 
   function oncontextmenu(e) {
@@ -109,6 +118,7 @@
 <button class="sound-toggle" onclick={() => setMuted(!ui.muted)} aria-pressed={!ui.muted}>{@html ui.muted ? I.muted : I.speaker} Sound: {ui.muted ? "Off" : "On"}</button>
 <div class="era">October 2005 · Windows XP SP2 · Internet Explorer 6.0 · {count ? `${count} toolbar${count === 1 ? "" : "s"} and counting` : "0 toolbars (for now)"}</div>
 
-{#if ui.menu}{#key ui.menu}<Menu items={ui.menu.items} x={ui.menu.x} y={ui.menu.y} />{/key}{/if}
+{#if ui.menu}{#key ui.menu}<Menu items={ui.menu.items} x={ui.menu.x} y={ui.menu.y} onswitch={ui.menu.owner ? switchMenu : null} />{/key}{/if}
+<Balloon />
 <DialogHost />
 <Buddy />

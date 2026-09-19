@@ -16,6 +16,7 @@
     screensaver: { title: "FREE 3D Aquarium Screensaver!", url: "http://www.popular-screensavers.biz/aquarium3d.asp", w: 360 },
     mail: { title: "Inbox (1)", url: "http://mail.hotmoil.com/cgi-bin/HoTMaiL", w: 360 },
     im: { title: "xXsk8rboiXx - Conversation", url: null, w: 320, icon: I.person },
+    camera: { title: "X11 Wireless Camera - Only $79.99!", url: "http://ads.x11cam-direct.biz/popunder.html?src=toolbar", w: 360 },
   };
   const spec = $derived(SPECS[kind]);
   const title = $derived(exit ? "WAIT! Before you go... - Microsoft Internet Explorer" : spec.url ? `${spec.title} - Microsoft Internet Explorer` : spec.title);
@@ -94,6 +95,13 @@
         <b style="font-size:15px">FREE 3D Aquarium Screensaver</b><br />Turn your desktop into a relaxing ocean!<br />
         <button class="xpbtn def" style="margin-top:8px;color:#000" onclick={claim}>Download FREE</button>
         <div style="font-size:9px;opacity:.7;margin-top:6px">Includes MyWebSurch toolbar and 3 partner offers. By downloading you agree to a 41-page EULA.</div>
+      </div>
+    {:else if kind === "camera"}
+      <div class="ad-cam">
+        <svg viewBox="0 0 60 44" style="width:84px;height:62px"><rect x="6" y="8" width="44" height="30" rx="6" fill="#222"/><circle cx="28" cy="23" r="11" fill="#555" stroke="#999" stroke-width="2"/><circle cx="28" cy="23" r="5" fill="#0af"/><rect x="42" y="12" width="5" height="3" fill="#e33"/><path d="M50 18l8-4v18l-8-4z" fill="#444"/></svg>
+        <div><b>The X11 Wireless Camera</b><br />See what's happening at home, from anywhere!<br /><span class="price">Only $79.99</span></div>
+        <button class="xpbtn def" onclick={claim}>Order Now &gt;&gt;</button>
+        <div class="fine-w">This window opened behind your browser. You're welcome.</div>
       </div>
     {:else if kind === "mail"}
       <div class="ad-mail">

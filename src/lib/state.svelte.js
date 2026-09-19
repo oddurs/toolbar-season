@@ -47,6 +47,8 @@ export const ui = $state({
   viewPct: 0,
 
   connected: false,
+  visited: {},
+  tip: false, // first-visit balloon
   pageErrors: false,
   errors: [], // script errors on the current page
   hideNonsecure: false,

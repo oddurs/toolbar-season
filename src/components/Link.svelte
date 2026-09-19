@@ -16,4 +16,4 @@
   }
 </script>
 
-<a href={target} {style} {onclick} onmouseenter={() => !ui.loading && setStatus(target)} onmouseleave={() => !ui.loading && setStatus()}>{@render children()}</a>
+<a href={target} class:visited={!!ui.visited[target]} {style} {onclick} onmouseenter={() => !ui.loading && setStatus(target)} onmouseleave={() => !ui.loading && setStatus()}>{@render children()}</a>

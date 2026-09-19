@@ -17,6 +17,8 @@ Things to try:
 - Watch the status bar while a page loads. Every toolbar makes it slower. Double-click "Done, but with errors on page."
 - Sign in to Free Hotmoil (Links bar).
 - Stay toolbar-free for a full minute.
+- Minimize the window now and then. Some ads open behind it.
+- The menus work from the keyboard: Alt+letter, then the arrow keys.
 - Click an ad, punch the monkey, or say "Don't Install" to a security prompt.
 - Try changing your home page in **Tools › Internet Options**.
 - Type in the address bar and see what AutoComplete suggests.
