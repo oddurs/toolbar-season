@@ -15,6 +15,7 @@
   import Buddy from "./components/Buddy.svelte";
   import Balloon from "./components/Balloon.svelte";
   import Desktop from "./components/Desktop.svelte";
+  import Wallpaper from "./components/Wallpaper.svelte";
 
   let winEl = $state(), pageEl = $state();
   const collapsed = $derived(ui.ended === "collapse" && adware().length >= ADWARE_TOTAL);
@@ -140,6 +141,7 @@
 
 <svelte:window {onkeydown} {onpointerdown} />
 
+<Wallpaper />
 <Desktop />
 
 <main

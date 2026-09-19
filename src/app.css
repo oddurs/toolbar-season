@@ -669,3 +669,6 @@ body.dragging-win iframe { pointer-events: none; }
 .lyrics span { color: #999; transition: color .1s; }
 .lyrics span.sung { color: #000; }
 .lyrics span.now { color: #7b3fb8; font-weight: bold; }
+
+/* The painted wallpaper sits behind everything; the CSS gradient under it is the fallback. */
+.wallpaper { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; display: block; pointer-events: none; }
