@@ -16,6 +16,7 @@ Things to try:
 - Alt+F, Alt+V, Alt+T and the rest open the menus.
 - Watch the status bar while a page loads. Every toolbar makes it slower. Double-click "Done, but with errors on page."
 - Sign in to Free Hotmoil (Links bar).
+- Download something "free". Watch the transfer rate.
 - Stay toolbar-free for a full minute.
 - Minimize the window now and then. Some ads open behind it.
 - The menus work from the keyboard: Alt+letter, then the arrow keys.
@@ -35,9 +36,12 @@ npm install
 npm run dev       # dev server at http://localhost:5173
 npm run build     # static build in dist/
 npm run preview   # serve the build
+npm test          # end-to-end tests (Playwright, uses your installed Chrome)
 ```
 
-Pushing to `main` builds and deploys to GitHub Pages (`.github/workflows/deploy.yml`).
+Add `?test` to the URL to switch off the random ads, pop-ups and self-installs and make loading instant. The tests use it.
+
+Pushing to `main` runs the tests, then builds and deploys to GitHub Pages (`.github/workflows/deploy.yml`).
 
 ## Layout
 
@@ -46,5 +50,6 @@ Pushing to `main` builds and deploys to GitHub Pages (`.github/workflows/deploy.
 - `src/lib/actions.js`: everything that changes it (navigation, installs, pop-ups, timers).
 - `src/lib/pages.js` and `src/components/pages/`: the fake 2005 web.
 - `src/components/dialogs/`: pop-ups and XP dialogs.
+- `tests/`: end-to-end tests.
 
 Toolbar names are parodies.

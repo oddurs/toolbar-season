@@ -1,6 +1,6 @@
 // Everything that changes the browser: navigation, bars coming and going,
 // dialogs, menus, and the background hum of adware.
-import { ui, isOn, isInstalled, adware, hijacker, KEV_URL, HOME_URL, HAMSTER_URL, SYNERGY_URL } from "./state.svelte.js";
+import { ui, TEST, isOn, isInstalled, adware, hijacker, KEV_URL, HOME_URL, HAMSTER_URL, SYNERGY_URL } from "./state.svelte.js";
 import { ALL_BARS, EXTRA_BARS, byId } from "./toolbars.js";
 import { resolve, normalize, searchUrl, ENGINES } from "./pages.js";
 import { navClick, ding, chord, blocked } from "./sound.js";
@@ -53,7 +53,7 @@ export function load(done, url = ui.url) {
         `Website found. Waiting for reply...`,
       ]));
     }
-    loadTimer = setTimeout(step, rand(50, 160));
+    loadTimer = setTimeout(step, TEST ? 0 : rand(50, 160));
   };
   step();
 }
@@ -64,7 +64,7 @@ const SCRIPT_ERRORS = [
 ];
 function scriptErrors(url) {
   const bars = adware();
-  if (bars.length < 3 || Math.random() > 0.55) return [];
+  if (TEST || bars.length < 3 || Math.random() > 0.55) return [];
   return Array.from({ length: 1 + Math.floor(rand(0, Math.min(4, bars.length / 3))) }, () => {
     const [msg, line] = pick(SCRIPT_ERRORS);
     return { line, char: Math.floor(rand(1, 80)), error: msg.replace("{id}", pick(bars).id), url };
@@ -147,7 +147,7 @@ export function uninstall(id) {
   ui.on[id] = false;
   ui.installed[id] = false;
   ui.uninstalled[id] = true;
-  if (!b.respawn || Math.random() > 0.3) return false;
+  if (!b.respawn || TEST || Math.random() > 0.3) return false;
   respawns[id] = setTimeout(() => {
     if (!ui.uninstalled[id]) return;
     delete ui.uninstalled[id];
@@ -183,6 +183,14 @@ export function raise(id) { const d = ui.dialogs.find(d => d.id === id); if (d) 
 export function alertDlg(msg, { title = "Microsoft Internet Explorer", icon = "info" } = {}) {
   (icon === "err" ? chord : ding)();
   return openDialog("alert", { msg, title, icon });
+}
+
+// SP2's File Download flow: Run or Save, a download at dial-up speed, then
+// "The publisher could not be verified". Ends in a toolbar either way.
+export function download(file, bar) {
+  if (!bar || isInstalled(bar.id)) bar = EXTRA_BARS.find(b => !b.manual && !isInstalled(b.id));
+  if (!bar) return alertDlg("There is nothing left to install. You have every toolbar.<br><br>Congratulations?");
+  openDialog("download", { file, bar });
 }
 
 export function activeX(bar, nag = 0) {
@@ -361,6 +369,7 @@ export function start() {
 let started = false;
 export function connected() {
   ui.connected = true;
+  if (TEST) return go(HOME_URL);
   try { if (!localStorage.getItem("toolbar-season:tip")) setTimeout(() => (ui.tip = true), 6000); } catch { setTimeout(() => (ui.tip = true), 6000); }
   showInfo("Dial-up Connection is now connected. Speed: 44.0 Kbps.", null, "info");
   go(HOME_URL);

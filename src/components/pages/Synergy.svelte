@@ -1,7 +1,7 @@
 <script>
   // A 2005 corporate site: a Flash preloader, an intro, and a Skip Intro button.
   import { onDestroy } from "svelte";
-  import { activeX, rand } from "../../lib/actions.js";
+  import { download, rand } from "../../lib/actions.js";
 
   let loaded = $state(0);
   let skipped = $state(false);
@@ -27,7 +27,7 @@
     <div class="syn-site">
       <h2>SynergyVision Solutions, Inc.</h2>
       <p>Welcome. This site requires <b>Macromedia Flash Player 7</b> or higher. You have Flash Player 6.</p>
-      <button class="xpbtn def" onclick={() => activeX()}>Get Flash Player</button>
+      <button class="xpbtn def" onclick={() => download("flashplayer7_install_ie.exe")}>Get Flash Player</button>
       <p class="fine">Get Flash Player also installs a toolbar. That's just how it is now.</p>
     </div>
   {/if}

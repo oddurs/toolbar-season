@@ -5,6 +5,7 @@
   import { I } from "../../lib/icons.js";
   import { connected, offline } from "../../lib/actions.js";
   import { modem, wakeAudio } from "../../lib/sound.js";
+  import { TEST } from "../../lib/state.svelte.js";
 
   let { dlg, close } = $props();
   let phase = $state(-1);
@@ -18,7 +19,7 @@
     phase = 0;
     // Let the resumed audio context start before scheduling the handshake.
     timers.push(setTimeout(() => {
-      const len = Math.max(modem(), 4.5) * 1000;
+      const len = TEST ? 0 : Math.max(modem(), 4.5) * 1000;
       timers.push(setTimeout(() => (phase = 1), len * 0.55));
       timers.push(setTimeout(() => (phase = 2), len * 0.85));
       timers.push(setTimeout(() => (phase = 3), len));

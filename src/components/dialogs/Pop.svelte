@@ -3,7 +3,7 @@
   import { onMount } from "svelte";
   import Dialog from "../Dialog.svelte";
   import { I } from "../../lib/icons.js";
-  import { activeX, openPop, rand } from "../../lib/actions.js";
+  import { activeX, download, openPop, rand } from "../../lib/actions.js";
   import { byId } from "../../lib/toolbars.js";
 
   let { dlg, close, kind, exit = false } = $props();
@@ -93,7 +93,7 @@
       <div class="ad-fish">
         <svg viewBox="0 0 120 34" style="width:150px;height:42px"><g fill="#ff9a1a"><ellipse cx="22" cy="17" rx="13" ry="8"/><path d="M8 17 0 9v16z"/></g><g fill="#ffe14a"><ellipse cx="62" cy="12" rx="10" ry="6"/><path d="M51 12l-7-6v12z"/></g><g fill="#6fd0ff"><ellipse cx="98" cy="20" rx="12" ry="8"/><path d="M85 20l-8-7v14z"/></g><circle cx="30" cy="15" r="1.6" fill="#000"/><circle cx="68" cy="11" r="1.3" fill="#000"/><circle cx="106" cy="18" r="1.5" fill="#000"/></svg>
         <b style="font-size:15px">FREE 3D Aquarium Screensaver</b><br />Turn your desktop into a relaxing ocean!<br />
-        <button class="xpbtn def" style="margin-top:8px;color:#000" onclick={claim}>Download FREE</button>
+        <button class="xpbtn def" style="margin-top:8px;color:#000" onclick={() => { close("claim"); download("Aquarium3D_Setup.exe"); }}>Download FREE</button>
         <div style="font-size:9px;opacity:.7;margin-top:6px">Includes MyWebSurch toolbar and 3 partner offers. By downloading you agree to a 41-page EULA.</div>
       </div>
     {:else if kind === "camera"}

@@ -13,6 +13,10 @@ export const HAMSTER_URL = "http://www.hamsterparty.fake/";
 // Sites IE knows about, for AutoComplete.
 export const KNOWN_URLS = [HOME_URL, KEV_URL, FORUM_URL, UPDATE_URL, SYNERGY_URL, HAMSTER_URL, HOTMOIL_URL];
 
+// ?test turns off the random parts (ads, pop-ups, self-installs, tips) and
+// makes loading instant, so the end-to-end tests are repeatable.
+export const TEST = typeof location !== "undefined" && new URLSearchParams(location.search).has("test");
+
 export const ui = $state({
   order: TOOLBARS.map(b => b.id), // rebar order, including bars not yet installed
   on: Object.fromEntries(TOOLBARS.map(b => [b.id, true])),
