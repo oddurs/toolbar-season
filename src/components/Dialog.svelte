@@ -8,10 +8,13 @@
   let el = $state();
 
   onMount(() => {
+    const before = document.activeElement;
     const r = el.getBoundingClientRect();
     dlg.x = Math.max(4, Math.min(innerWidth - r.width - 4, dlg.x ?? (innerWidth - r.width) / 2));
     dlg.y = Math.max(4, Math.min(innerHeight - r.height - 4, dlg.y ?? (innerHeight - r.height) / 2.4));
     el.querySelector(".btns .def")?.focus();
+    // Hand focus back to whatever had it, if it's still on the page.
+    return () => { if (before?.isConnected && !document.querySelector(".dlg:focus-within")) before.focus?.({ preventScroll: true }); };
   });
 
   function drag(e) {

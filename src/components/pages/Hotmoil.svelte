@@ -2,7 +2,7 @@
   // Hotmoil: a secure sign-in page with an insecure banner ad, and an inbox
   // where every message came from a toolbar.
   import { ui, INBOX_URL } from "../../lib/state.svelte.js";
-  import { go, openPop, alertDlg } from "../../lib/actions.js";
+  import { go, openPop, alertDlg, openDialog } from "../../lib/actions.js";
 
   let { mode } = $props();
   let email = $state("smithfamily@hotmoil.com");
@@ -19,6 +19,13 @@
     ["Hotmoil Staff", "Your mailbox is almost full (2 MB)", "10/14/2005"],
     ["Kev", "check out my site i updated it (3 years ago)", "10/13/2005"],
   ];
+  // IE's AutoComplete offered to remember every password, once per page.
+  function signIn(e) {
+    e.preventDefault();
+    if (ui.pwAsked) return go(INBOX_URL);
+    ui.pwAsked = true;
+    openDialog("password", {}, { onClose: () => go(INBOX_URL) });
+  }
   const open = m => (m[3] ? m[3]() : alertDlg(`<b>${m[1]}</b><br><br>This message has been blocked because it contained images. <u>Click here to show images</u> (all of them are ads).`, { title: m[0] }));
 </script>
 
@@ -29,7 +36,7 @@
     </div>
     <div class="hm-card">
       <div class="hm-logo"><span>✿</span> Hotmoil</div>
-      <form onsubmit={e => { e.preventDefault(); go(INBOX_URL); }}>
+      <form onsubmit={signIn}>
         <label>E-mail address: <input class="box" bind:value={email} aria-label="E-mail address" /></label>
         <label>Password: <input class="box" type="password" value="hunter22" aria-label="Password" /></label>
         <label class="chk"><input type="checkbox" checked /> Sign me in automatically.</label>

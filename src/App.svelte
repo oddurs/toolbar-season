@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { ui, toolbarCount, bars, isOn, adware } from "./lib/state.svelte.js";
-  import { start, act, openMenu, closeMenu, crash, wakeAudio, checkSqueeze, trackClean, setMuted } from "./lib/actions.js";
+  import { start, act, openMenu, closeMenu, crash, wakeAudio, checkSqueeze, trackClean, setMuted, escapeDialog } from "./lib/actions.js";
   import { pageMenu } from "./lib/pagemenu.js";
   import { MENUS } from "./lib/menus.js";
   import { I } from "./lib/icons.js";
@@ -70,7 +70,10 @@
     if (menuKey(e)) return;
     if (e.key === "F11") { e.preventDefault(); act.full(); }
     if (e.key === "F5") { e.preventDefault(); act.refresh(); }
-    if (e.key === "Escape") { closeMenu(); act.stop(); }
+    if (e.key === "Escape") {
+      if (ui.menu) return closeMenu();
+      if (!escapeDialog()) act.stop();
+    }
   }
   // Dismiss menus on pointer-down, before the click that may open another one.
   function onpointerdown(e) {

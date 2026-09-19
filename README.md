@@ -17,6 +17,8 @@ Things to try:
 - Watch the status bar while a page loads. Every toolbar makes it slower. Double-click "Done, but with errors on page."
 - Sign in to Free Hotmoil (Links bar).
 - Download something "free". Watch the transfer rate.
+- Sign Kev's guestbook, and press play on his MIDI jukebox.
+- Reply to the TechGuyz thread. The moderator reads your toolbars.
 - Stay toolbar-free for a full minute.
 - Minimize the window now and then. Some ads open behind it.
 - The menus work from the keyboard: Alt+letter, then the arrow keys.

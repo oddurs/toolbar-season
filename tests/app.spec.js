@@ -141,7 +141,57 @@ test("Hotmoil asks about nonsecure items and signs in", async ({ page }) => {
   await expect(page.locator(".hm-banner .broken")).toBeVisible();
   await expect(page.locator(".st-lock")).toBeVisible();
   await page.getByRole("button", { name: "Sign In" }).click();
+  const remember = page.getByRole("dialog", { name: "AutoComplete" });
+  await expect(remember).toContainText("remember this password");
+  await remember.getByRole("button", { name: "No" }).click();
   await expect(page.locator(".hm-inbox tbody tr")).toHaveCount(10);
+});
+
+test("Kev's guestbook can be signed, and the spam bot follows", async ({ page }) => {
+  await connect(page);
+  await band(page, "links").getByRole("button", { name: "Kev's Page" }).click();
+  await page.getByRole("button", { name: "Sign My Guestbook!!" }).click();
+  await page.getByLabel("Name:").fill("Toolbar Tester");
+  await page.getByLabel("Message:").fill("cool site, 10/10");
+  await page.getByRole("button", { name: "Sign it!" }).click();
+  await expect(page.locator(".gb-entry").first()).toContainText("cool site, 10/10");
+  await expect(page.locator(".gb-entry").first()).toContainText("ringtones", { timeout: 6000 });
+  // Signatures survive a reload.
+  await page.reload();
+  await page.getByRole("button", { name: "Dial" }).click();
+  await expect(title(page)).toContainText("Home Search Portal");
+  await band(page, "links").getByRole("button", { name: "Kev's Page" }).click();
+  await page.getByRole("button", { name: "Sign My Guestbook!!" }).click();
+  await expect(page.locator(".gb-entry", { hasText: "Toolbar Tester" })).toHaveCount(1);
+});
+
+test("Kev's MIDI jukebox has a play button", async ({ page }) => {
+  await connect(page);
+  await band(page, "links").getByRole("button", { name: "Kev's Page" }).click();
+  await page.getByRole("button", { name: "MIDI Jukebox" }).click();
+  const player = page.locator(".midi-player");
+  await player.getByRole("button", { name: "Play" }).click();
+  await expect(player.getByRole("button", { name: "Stop" })).toBeVisible();
+  await expect(page.locator(".midi-track i")).toHaveClass(/on/);
+});
+
+test("the forum moderator answers your reply", async ({ page }) => {
+  await connect(page);
+  await page.locator(".portal").getByRole("link", { name: "TechGuyz Forums" }).click();
+  await page.getByLabel("Quick Reply").fill("i scanned and they came back");
+  await page.getByRole("button", { name: "Post Quick Reply" }).click();
+  await expect(page.locator(".forum .body").last()).toContainText("still has", { timeout: 6000 });
+});
+
+test("Esc closes the frontmost dialog", async ({ page }) => {
+  await connect(page);
+  await page.keyboard.press("Alt+KeyH");
+  await page.keyboard.press("End");
+  await page.keyboard.press("Enter");
+  const about = page.getByRole("dialog", { name: "About Internet Explorer" });
+  await expect(about).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(about).toHaveCount(0);
 });
 
 test("File › Close crashes IE and restores every toolbar", async ({ page }) => {

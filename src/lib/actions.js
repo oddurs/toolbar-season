@@ -81,7 +81,6 @@ export function go(raw, { push = true } = {}) {
     ui.route = { page: r.page, props: r.props, key: Math.random() };
     ui.title = `${r.title} - Microsoft Internet Explorer`;
     ui.highlight = false;
-    ui.kevNote = "";
     ui.visited[r.url] = true;
     ui.errors = scriptErrors(r.url);
     ui.pageErrors = ui.errors.length > 0;
@@ -177,6 +176,14 @@ export function closeDialog(id, why) {
   if (!d) return;
   ui.dialogs = ui.dialogs.filter(x => x.id !== id);
   d.onClose?.(why);
+}
+// Esc works like Cancel on the frontmost dialog. Not on the ones where
+// Windows wouldn't let you (the crash report) or where Cancel means something.
+export function escapeDialog() {
+  const top = ui.dialogs.filter(d => d.z > 1 && !["crash", "dialup"].includes(d.kind)).sort((a, b) => b.z - a.z)[0];
+  if (!top) return false;
+  closeDialog(top.id, "esc");
+  return true;
 }
 export function raise(id) { const d = ui.dialogs.find(d => d.id === id); if (d) d.z = ++z; }
 

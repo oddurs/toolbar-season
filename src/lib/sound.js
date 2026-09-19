@@ -92,3 +92,31 @@ export function modem(number = "5550142") {
     return t - c.currentTime;
   } catch { return 0; }
 }
+
+// Pachelbel's Canon, the most GeoCities of MIDI files (public domain).
+// Ground bass under three variations, looped until stopped.
+const NOTE = n => 440 * 2 ** ((({ C: -9, D: -7, E: -5, F: -4, G: -2, A: 0, B: 2 })[n[0]] + (n[1] === "#" ? 1 : 0) + (+n.at(-1) - 4) * 12) / 12);
+const BASS = ["D3", "A2", "B2", "F#2", "G2", "D2", "G2", "A2"];
+const TUNES = [
+  ["F#5", "E5", "D5", "C#5", "B4", "A4", "B4", "C#5"].map(n => [n]),
+  ["D5", "C#5", "B4", "A4", "G4", "F#4", "G4", "E4"].map(n => [n]),
+  [["D5", "F#5"], ["A5", "G5"], ["F#5", "D5"], ["F#5", "E5"], ["D5", "B4"], ["D5", "A4"], ["G4", "B4"], ["A4", "G4"]],
+];
+export function canon() {
+  let stopped = false, bar = 0, timer;
+  const beat = 0.62;
+  const schedule = () => {
+    if (stopped || ui.muted) return;
+    try {
+      const c = audio();
+      if (c.state !== "running") { timer = setTimeout(schedule, 300); return; }
+      const t0 = c.currentTime + 0.05, tune = TUNES[bar % TUNES.length];
+      BASS.forEach((n, i) => tone([NOTE(n)], t0 + i * beat, beat * 0.95, 0.035, "triangle"));
+      tune.forEach((notes, i) => notes.forEach((n, j) => tone([NOTE(n)], t0 + i * beat + (j * beat) / notes.length, beat / notes.length * 0.9, 0.025, "square")));
+      bar++;
+      timer = setTimeout(schedule, BASS.length * beat * 1000 - 60);
+    } catch {}
+  };
+  schedule();
+  return () => { stopped = true; clearTimeout(timer); };
+}

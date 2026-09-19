@@ -19,8 +19,9 @@
   import ScriptError from "./dialogs/ScriptError.svelte";
   import Certificate from "./dialogs/Certificate.svelte";
   import Download from "./dialogs/Download.svelte";
+  import Password from "./dialogs/Password.svelte";
 
-  const KINDS = { alert: Alert, activex: ActiveX, pop: Pop, scan: Scan, addons: Addons, options: Options, about: About, why: Why, crash: Crash, source: Source, smiley: Smiley, dialup: DialUp, arp: Arp, uninstall: Uninstall, mixed: Mixed, scripterror: ScriptError, certificate: Certificate, download: Download };
+  const KINDS = { alert: Alert, activex: ActiveX, pop: Pop, scan: Scan, addons: Addons, options: Options, about: About, why: Why, crash: Crash, source: Source, smiley: Smiley, dialup: DialUp, arp: Arp, uninstall: Uninstall, mixed: Mixed, scripterror: ScriptError, certificate: Certificate, download: Download, password: Password };
 </script>
 
 {#each ui.dialogs as dlg (dlg.id)}

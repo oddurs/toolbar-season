@@ -47,10 +47,12 @@ export const ui = $state({
   blocked: 0,
   peopleCount: 37,
   kevCount: 4417,
-  kevNote: "",
   viewPct: 0,
 
   connected: false,
+  guestbook: [], // entries signed by you (and the spam bot), saved in localStorage
+  forumReplies: [], // this session's posts on the TechGuyz thread
+  pwAsked: false,
   visited: {},
   tip: false, // first-visit balloon
   pageErrors: false,
