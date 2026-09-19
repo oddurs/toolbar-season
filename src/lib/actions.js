@@ -1,8 +1,10 @@
 // Everything that changes the browser: navigation, bars coming and going,
 // dialogs, menus, and the background hum of adware.
-import { ui, isOn, isInstalled, adware, hijacker, KEV_URL, HOME_URL } from "./state.svelte.js";
+import { ui, isOn, isInstalled, adware, hijacker, KEV_URL, HOME_URL, HAMSTER_URL, SYNERGY_URL } from "./state.svelte.js";
 import { ALL_BARS, EXTRA_BARS, byId } from "./toolbars.js";
 import { resolve, normalize, searchUrl, ENGINES } from "./pages.js";
+import { navClick } from "./sound.js";
+export { wakeAudio } from "./sound.js";
 
 export const rand = (a, b) => a + Math.random() * (b - a);
 export const pick = a => a[Math.floor(Math.random() * a.length)];
@@ -40,6 +42,7 @@ export function load(done, url = ui.url) {
 }
 
 export function go(raw, { push = true } = {}) {
+  if (!ui.connected) return dialUp();
   const r = resolve(normalize(raw, ui.url));
   if (push) { ui.hist = [...ui.hist.slice(0, ui.idx + 1), r.url]; ui.idx++; }
   ui.url = r.url;
@@ -71,25 +74,6 @@ export function setHome(v) {
   }
 }
 
-// IE6's navigation "click", synthesized.
-let actx;
-export function navClick() {
-  try {
-    actx ||= new (window.AudioContext || window.webkitAudioContext)();
-    if (actx.state !== "running") return;
-    [0, 0.028].forEach(dt => {
-      const t = actx.currentTime + dt, o = actx.createOscillator(), g = actx.createGain();
-      o.type = "square";
-      o.frequency.setValueAtTime(2600, t);
-      o.frequency.exponentialRampToValueAtTime(700, t + 0.015);
-      g.gain.setValueAtTime(0.05, t);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.02);
-      o.connect(g).connect(actx.destination);
-      o.start(t); o.stop(t + 0.025);
-    });
-  } catch {}
-}
-export const wakeAudio = () => actx?.state === "suspended" && actx.resume();
 
 // ---------------- bars come and go ----------------
 const respawns = {};
@@ -144,7 +128,7 @@ export function raise(id) { const d = ui.dialogs.find(d => d.id === id); if (d) 
 export const alertDlg = (msg, { title = "Microsoft Internet Explorer", icon = "info" } = {}) => openDialog("alert", { msg, title, icon });
 
 export function activeX(bar, nag = 0) {
-  if (!bar || isInstalled(bar.id)) bar = EXTRA_BARS.find(b => !isInstalled(b.id));
+  if (!bar || isInstalled(bar.id)) bar = EXTRA_BARS.find(b => !b.manual && !isInstalled(b.id));
   if (!bar) return alertDlg("There is nothing left to install. You have every toolbar.<br><br>Congratulations?");
   openDialog("activex", { bar, nag });
 }
@@ -226,6 +210,8 @@ export const favoritesMenu = () => [
   { label: "Links", items: [{ label: "Customize Links", fn: act.why }, { label: "Free Hotmoil", fn: act.mail }, { label: "Windows Media", fn: act.media }] },
   { label: "Kev's Awesome Homepage", fn: () => go(KEV_URL) },
   { label: "Home Search Portal", fn: () => go(HOME_URL) },
+  { label: "THE HAMSTER PARTY!!!", fn: () => go(HAMSTER_URL) },
+  { label: "SynergyVision Solutions", fn: () => go(SYNERGY_URL) },
   { label: "Radio Station Guide" }, "-",
   { label: "Cheap Flights!!!", spons: true, fn: () => openPop("winner") },
   { label: "Online Casino — $500 FREE", spons: true, fn: () => openPop("winner") },
@@ -254,18 +240,69 @@ function adTick() {
 
 // New toolbars keep arriving on their own, until there are none left to arrive.
 function creep() {
-  const next = EXTRA_BARS.find(b => !isInstalled(b.id));
+  const next = EXTRA_BARS.find(b => !b.manual && !isInstalled(b.id));
   if (!next) return;
   if (ui.crashed || ui.dialogs.length) return setTimeout(creep, 8000);
   installBar(next, `${next.name} was installed automatically as part of a recommended update. No action is needed.`);
   setTimeout(creep, rand(55000, 90000));
 }
 
+// When the page is nearly gone, offer a toolbar that "makes more room". Once.
+export function checkSqueeze() {
+  if (ui.squeezeOffered || !ui.connected || ui.viewPct > 8 || ui.viewPct === 0) return;
+  ui.squeezeOffered = true;
+  setTimeout(() => activeX(byId("screenspace")), 1200);
+}
+
+// Time spent with no third-party toolbars, and the best run so far.
+let cleanTimer;
+export function trackClean() {
+  const clean = adware().length === 0 && ui.connected;
+  if (clean && !ui.cleanSince) {
+    ui.cleanSince = Date.now();
+    ui.cleanFor = 0;
+    cleanTimer = setInterval(() => {
+      ui.cleanFor = Math.floor((Date.now() - ui.cleanSince) / 1000);
+      if (ui.cleanFor > ui.bestClean) {
+        ui.bestClean = ui.cleanFor;
+        try { localStorage.setItem("toolbar-season:best", String(ui.bestClean)); } catch {}
+      }
+    }, 1000);
+  } else if (!clean && ui.cleanSince) {
+    clearInterval(cleanTimer);
+    ui.cleanSince = null;
+  }
+}
+
+// The session starts offline, at the dial-up prompt.
 export function start() {
+  try { ui.bestClean = +localStorage.getItem("toolbar-season:best") || 0; } catch {}
+  ui.route = { page: resolve("about:blank").page, props: {}, key: 0 };
+  ui.url = "about:blank";
+  ui.title = "about:blank - Microsoft Internet Explorer";
+  dialUp();
+  setInterval(() => (ui.peopleCount = Math.floor(rand(20, 60))), 3000);
+}
+
+let started = false;
+export function connected() {
+  ui.connected = true;
+  showInfo("Dial-up Connection is now connected. Speed: 44.0 Kbps.", null, "info");
   go(HOME_URL);
-  popupInfo();
+  if (started) return;
+  started = true;
+  setTimeout(popupInfo, 2500);
   setTimeout(adTick, 9000);
   setTimeout(creep, 45000);
   setTimeout(() => buddy(BUDDY_LINES[0]), 22000);
-  setInterval(() => (ui.peopleCount = Math.floor(rand(20, 60))), 3000);
+}
+
+export function dialUp() {
+  if (!ui.dialogs.some(d => d.kind === "dialup")) openDialog("dialup");
+}
+
+export function offline() {
+  ui.route = { page: resolve("offline:").page, props: {}, key: Math.random() };
+  ui.url = "about:blank";
+  ui.title = "Web page unavailable while offline - Microsoft Internet Explorer";
 }

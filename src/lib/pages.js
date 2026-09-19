@@ -4,6 +4,10 @@ import Results from "../components/pages/Results.svelte";
 import Kev from "../components/pages/Kev.svelte";
 import Forum from "../components/pages/Forum.svelte";
 import CannotDisplay from "../components/pages/CannotDisplay.svelte";
+import Offline from "../components/pages/Offline.svelte";
+import WindowsUpdate from "../components/pages/WindowsUpdate.svelte";
+import Synergy from "../components/pages/Synergy.svelte";
+import Hamsters from "../components/pages/Hamsters.svelte";
 import { hijacker } from "./state.svelte.js";
 
 export const ENGINES = {
@@ -36,6 +40,10 @@ const ROUTES = [
   { match: u => /^http:\/\/(www\.)?home-search-portal\.biz/.test(u), page: Portal, title: "Home Search Portal - Your Start Page for the Internet!!" },
   { match: u => /^http:\/\/(www\.)?geocitiez\.com/.test(u), page: Kev, title: "~*~ KeV's AwEsOmE HoMePaGe ~*~" },
   { match: u => u.startsWith("http://forums.techguyz.fake"), page: Forum, title: "HELP!!! toolbars wont go away - TechGuyz Forums" },
+  { match: u => /^http:\/\/(www\.|v5\.)?windowsupdate\.fake/.test(u), page: WindowsUpdate, title: "Microsoft Windows Update" },
+  { match: u => /^http:\/\/(www\.)?synergyvision-solutions\.fake/.test(u), page: Synergy, title: "SynergyVision Solutions, Inc. :: Welcome ::" },
+  { match: u => /^http:\/\/(www\.)?hamsterparty\.fake/.test(u), page: Hamsters, title: "THE HAMSTER PARTY!!!" },
+  { match: u => u === "offline:", page: Offline, title: "Web page unavailable while offline" },
   { match: u => u === "about:blank", page: null, title: "about:blank" },
 ];
 

@@ -12,8 +12,9 @@
   import Crash from "./dialogs/Crash.svelte";
   import Source from "./dialogs/Source.svelte";
   import Smiley from "./dialogs/Smiley.svelte";
+  import DialUp from "./dialogs/DialUp.svelte";
 
-  const KINDS = { alert: Alert, activex: ActiveX, pop: Pop, scan: Scan, addons: Addons, options: Options, about: About, why: Why, crash: Crash, source: Source, smiley: Smiley };
+  const KINDS = { alert: Alert, activex: ActiveX, pop: Pop, scan: Scan, addons: Addons, options: Options, about: About, why: Why, crash: Crash, source: Source, smiley: Smiley, dialup: DialUp };
 </script>
 
 {#each ui.dialogs as dlg (dlg.id)}

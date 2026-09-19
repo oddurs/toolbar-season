@@ -1,6 +1,6 @@
 <script>
   import Link from "../Link.svelte";
-  import { KEV_URL, FORUM_URL } from "../../lib/state.svelte.js";
+  import { KEV_URL, FORUM_URL, UPDATE_URL, SYNERGY_URL, HAMSTER_URL } from "../../lib/state.svelte.js";
   import { go, openPop } from "../../lib/actions.js";
   let q = $state("");
 </script>
@@ -30,7 +30,7 @@
         <b class="blink" style="color:#c00">CONGRATULATIONS!!</b><br />You are our <b>1,000,000th</b> visitor!<br /><u style="color:#00c">Click here to claim</u>
       </td>
     </tr></tbody></table>
-    <p>Also visit: <Link to={KEV_URL}>Kev's Awesome Homepage</Link> · <Link to={FORUM_URL}>TechGuyz Forums</Link> · <Link to="http://www.windowsupdate.fake/">Windows Update</Link> · <Link to="about:blank">about:blank</Link></p>
+    <p>Also visit: <Link to={KEV_URL}>Kev's Awesome Homepage</Link> · <Link to={FORUM_URL}>TechGuyz Forums</Link> · <Link to={UPDATE_URL}>Windows Update</Link> · <Link to={HAMSTER_URL}>The Hamster Party</Link> · <Link to={SYNERGY_URL}>SynergyVision Solutions</Link></p>
     <p class="fine">To change your homepage, go to Tools › Internet Options. (It won't work.) © 2005 Home Search Portal Ltd., a subsidiary of a subsidiary.</p>
   </div>
 </div>

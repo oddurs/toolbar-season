@@ -44,7 +44,7 @@ export const MENUS = {
     { label: "Pop-up Blocker", items: [{ label: "Turn Off Pop-up Blocker", fn: () => { popupInfo(); alertDlg("The Pop-up Blocker has been turned off. You will not notice a difference."); } }, { label: "Pop-up Blocker Settings..." }] },
     { label: "Manage Add-ons...", fn: () => openDialog("addons") },
     { label: "Synchronize..." },
-    { label: "Windows Update", fn: () => go("http://www.windowsupdate.fake/") }, "-",
+    { label: "Windows Update", fn: () => go("http://v5.windowsupdate.fake/") }, "-",
     { label: "SpyScrub SE Scan...", fn: act.scan },
     { label: "Gooble Toolbar Options", dis: !isOn("gooble") },
     { label: "Messenger" }, { label: "Sun Java Console" }, "-",

@@ -223,5 +223,16 @@ export const EXTRA_BARS = [
   },
 ];
 
+// Offered only when the page is nearly gone. Never auto-installed.
+EXTRA_BARS.push({
+  id: "screenspace", name: "ScreenSpace Toolbar", respawn: 30, manual: true,
+  bundled: "it promised to make more room for web pages",
+  items: s => [
+    logo("⇕ ScreenSpace", "color:#1d7f22"),
+    txt(`Now giving you <b>${Math.max(1, s.viewPct)}%</b> more room!*`),
+    txt("*Room not included. Requires ScreenSpace Pro.", "muted"),
+  ],
+});
+
 export const ALL_BARS = [...TOOLBARS, ...EXTRA_BARS];
 export const byId = id => ALL_BARS.find(b => b.id === id);

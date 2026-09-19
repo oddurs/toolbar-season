@@ -6,12 +6,16 @@ An interactive Internet Explorer 6 window from October 2005 (Windows XP SP2), so
 
 Things to try:
 
+- Dial in. Turn your sound on first.
 - Close a toolbar with its **×**, then wait. Most of them come back.
 - Drag toolbars around by their grips.
 - **Tools › SpyScrub SE Scan** removes every toolbar. For a while.
 - **Tools › Manage Add-ons** shows how you "agreed" to each one.
 - Click an ad, punch the monkey, or say "Don't Install" to a security prompt.
 - Try changing your home page in **Tools › Internet Options**.
+- Type in the address bar and see what AutoComplete suggests.
+- Visit Windows Update, the hamster page, and a site with a Skip Intro button.
+- Get down to zero third-party toolbars and see how long it lasts. Your best run is saved.
 - **File › Close**.
 
 ## Development

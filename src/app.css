@@ -423,3 +423,52 @@ textarea.source { width: 100%; height: 220px; box-sizing: border-box; font: 12px
 .cannot h1 { font: bold 17px var(--ui); margin: 0; }
 .cannot hr { border: 0; border-top: 1px solid #ccc; }
 .cannot ul { padding-left: 18px; }
+
+/* ---------- round three ---------- */
+.autocomplete { position: fixed; z-index: 450; background: #fff; border: 1px solid #7f9db9; box-shadow: 2px 2px 3px rgba(0,0,0,.25); font: 11px var(--ui); }
+.ac-item { padding: 2px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: default; }
+.ac-item.hot, .ac-item:hover { background: var(--sel); color: #fff; }
+.ac-item.spons { border-top: 1px solid #ddd; color: #c60; font-style: italic; }
+.ac-item.spons.hot, .ac-item.spons:hover { color: #ffd; }
+.status .st-clean { width: 150px; color: #1d6a12; }
+
+.dialup-art { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 4px 0 6px; border-bottom: 1px solid #d0d0bf; }
+.dialup-art .wire { width: 60px; height: 0; border-top: 2px dashed #6b6858; }
+.dialup-form { display: grid; grid-template-columns: auto 1fr; gap: 6px 8px; align-items: center; }
+.dialup-form .box { width: 100%; box-sizing: border-box; }
+.dialup-form .chk { display: flex; gap: 4px; align-items: center; }
+
+.wu { font: 12px Tahoma, Verdana, sans-serif; min-height: 100%; background: #fff; }
+.wu-head { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: linear-gradient(90deg, #0c3aa5, #3b78e7 60%, #7ea9f0); color: #fff; font-size: 18px; }
+.wu-flag { width: 22px; height: 20px; background: conic-gradient(#3fae24 0 25%, #fcd12a 0 50%, #2c7de1 0 75%, #e8421c 0); border-radius: 2px; transform: skewY(-6deg); }
+.wu-body { display: flex; }
+.wu aside { width: 150px; flex: none; background: #d6dff7; padding: 8px; display: flex; flex-direction: column; gap: 5px; color: #0c3aa5; }
+.wu-side-h { font-weight: bold; color: #fff; background: #3b78e7; margin: -8px -8px 4px; padding: 4px 8px; }
+.wu main { padding: 10px 14px; flex: 1; min-width: 0; }
+.wu h2 { font: bold 15px Tahoma, sans-serif; color: #0c3aa5; margin: 0 0 8px; }
+.wu-choices { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+.wu-btn { width: 190px; text-align: left; padding: 10px; border: 1px solid #7f9db9; border-radius: 4px; background: linear-gradient(#fff, #e6eefc); cursor: pointer; font: 11px Tahoma, sans-serif; }
+.wu-btn b { font-size: 14px; color: #0c3aa5; }
+.wu-btn span { color: #1d7f22; }
+.wu-btn:hover { box-shadow: 0 0 0 2px #f8b330; }
+.wu-update { border: 1px solid #c9d6f0; background: #f4f7fd; padding: 8px; }
+
+.syn { position: relative; min-height: 100%; background: radial-gradient(circle at 50% 40%, #3a4a6a, #05070d 70%); color: #cfe0ff; font: 12px Verdana, sans-serif; overflow: hidden; }
+.syn-load { position: absolute; left: 50%; top: 40%; translate: -50% -50%; text-align: center; letter-spacing: 2px; }
+.syn-bar { width: 160px; height: 4px; background: #223; margin-top: 6px; }
+.syn-bar i { display: block; height: 100%; background: #8cf; }
+.syn-intro { position: absolute; inset: 0; }
+.syn-intro span { position: absolute; left: 50%; top: 45%; translate: -50% -50%; font: bold 28px "Trebuchet MS", sans-serif; letter-spacing: 6px; opacity: 0; animation: synword 5.4s linear infinite; text-shadow: 0 0 12px #8cf; }
+@keyframes synword { 0% { opacity: 0; transform: scale(.4) rotate(-10deg); } 6% { opacity: 1; } 15% { opacity: 1; transform: scale(1.2) rotate(0); } 17%, 100% { opacity: 0; transform: scale(2); } }
+.syn-orb { position: absolute; left: 50%; top: 45%; width: 180px; height: 180px; translate: -50% -50%; border-radius: 50%; border: 2px solid rgba(140,200,255,.4); animation: spin 3s linear infinite; border-top-color: #8cf; }
+@keyframes spin { to { rotate: 360deg; } }
+.syn-skip { position: absolute; right: 12px; bottom: 10px; background: none; border: 0; color: #8cf; font: 11px Verdana, sans-serif; letter-spacing: 2px; cursor: pointer; }
+.syn-skip:hover { color: #fff; text-decoration: underline; }
+.syn-site { padding: 16px; background: #fff; color: #000; min-height: 100%; box-sizing: border-box; }
+.syn-site h2 { font: bold 18px "Trebuchet MS", sans-serif; color: #223a6a; margin: 0 0 8px; }
+
+.ham { background: #fff; text-align: center; padding: 8px; font: 13px "Comic Sans MS", "Chalkboard SE", cursive; }
+.ham-title { font: bold 26px Impact, "Arial Black", sans-serif; color: #f0f; text-shadow: 2px 2px #ff0; animation: blink 0.6s steps(2) infinite; }
+.ham-row { display: flex; justify-content: center; }
+.ham .h { width: 40px; height: 40px; display: inline-block; animation: dance .48s steps(2) infinite; }
+@keyframes dance { 50% { transform: translateY(-6px) rotate(8deg) scaleX(-1); } }

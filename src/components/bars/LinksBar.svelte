@@ -1,5 +1,5 @@
 <script>
-  import { KEV_URL } from "../../lib/state.svelte.js";
+  import { KEV_URL, UPDATE_URL, HAMSTER_URL } from "../../lib/state.svelte.js";
   import { act, go, openPop } from "../../lib/actions.js";
   import { I } from "../../lib/icons.js";
 
@@ -7,8 +7,9 @@
   const links = [
     ["Customize Links", I.page, () => act.why()],
     ["Free Hotmoil", I.page, () => act.mail()],
-    ["Windows Media", I.page, () => act.media()],
+    ["Windows Update", I.page, () => go(UPDATE_URL)],
     ["Kev's Page", I.page, () => go(KEV_URL)],
+    ["Hamsters!!", I.page, () => go(HAMSTER_URL)],
     null,
     ["Cheap Tickets!!", I.globe, () => openPop("winner")],
     ["Casino $500 FREE", I.dice, () => openPop("winner")],

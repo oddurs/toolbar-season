@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  import { ui, toolbarCount, bars, isOn } from "./lib/state.svelte.js";
-  import { start, act, closeMenu, crash, wakeAudio } from "./lib/actions.js";
+  import { ui, toolbarCount, bars, isOn, adware } from "./lib/state.svelte.js";
+  import { start, act, closeMenu, crash, wakeAudio, checkSqueeze, trackClean } from "./lib/actions.js";
   import { I } from "./lib/icons.js";
   import Rebar from "./components/Rebar.svelte";
   import Band from "./components/Band.svelte";
@@ -32,6 +32,8 @@
   });
 
   $effect(() => document.body.classList.toggle("sparkle", ui.sparkle));
+  $effect(() => { ui.viewPct; checkSqueeze(); });
+  $effect(() => { adware().length; ui.connected; trackClean(); });
 
   function onkeydown(e) {
     if (e.key === "F11") { e.preventDefault(); act.full(); }
