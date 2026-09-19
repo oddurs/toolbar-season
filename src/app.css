@@ -308,13 +308,13 @@ input.box {
 .buddy.bounce { animation: bounce .5s 2; }
 @keyframes bounce { 50% { transform: translateY(-14px); } }
 .bubble {
-  position: absolute; bottom: 96px; right: 50px; width: 190px;
+  position: absolute; bottom: 96px; right: 50px; width: 210px;
   background: var(--info); border: 1px solid #000; border-radius: 8px;
   padding: 8px; font: 11px var(--ui); color: #000; cursor: default;
 }
 .bubble::after { content: ""; position: absolute; right: 14px; bottom: -9px; border: 9px solid transparent; border-bottom: 0; border-top-color: #000; }
-.bubble .btns { display: flex; gap: 4px; margin-top: 6px; }
-.bubble .xpbtn { min-width: 0; height: 20px; font-size: 11px; }
+.bubble .btns { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.bubble .xpbtn { min-width: 0; height: 20px; padding: 0 6px; font-size: 11px; white-space: nowrap; }
 
 @media (max-width: 640px) {
   .win { inset: 0 0 18px; width: 100%; height: calc(100% - 18px); border-radius: 0; }
@@ -636,6 +636,6 @@ body.dragging-win iframe { pointer-events: none; }
 
 /* The collapse: the page is gone and the window closes up around its toolbars. */
 .mid.gone { flex: 0 0 0; min-height: 0; overflow: hidden; }
-.win.collapsed { height: auto !important; bottom: auto; animation: thunk .35s ease-out; }
+.win.collapsed { height: fit-content !important; animation: thunk .35s ease-out; }
 .win.collapsed .rebar { flex: none; }
 @keyframes thunk { 0% { transform: scaleY(1.04); } 60% { transform: scaleY(.985); } }

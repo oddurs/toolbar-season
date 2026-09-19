@@ -351,7 +351,9 @@ function adTick() {
 function creep() {
   const next = EXTRA_BARS.find(b => !b.manual && !isInstalled(b.id) && !ui.uninstalled[b.id]);
   if (!next || ui.ended) return;
-  if (ui.crashed || ui.closed || ui.dialogs.length || !adware().length) return setTimeout(creep, 5000);
+  // Wait while you're busy in a system dialog (not while ads are open: those are always open).
+  const busy = ui.dialogs.some(d => !["pop", "alert"].includes(d.kind));
+  if (ui.crashed || ui.closed || busy || !adware().length) return setTimeout(creep, 5000);
   const parent = pick(adware());
   installBar(next, `${parent.name} installed ${next.name} as part of a recommended update. No action is needed.`, { self: true });
   setTimeout(creep, rand(30000, 50000));

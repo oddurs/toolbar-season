@@ -223,9 +223,10 @@ export const EXTRA_BARS = [
   },
 ];
 
-// Offered only when the page is nearly gone. Never auto-installed.
+// Offered when the page is nearly gone, and otherwise the last toolbar to
+// install itself: the one that finishes the page off.
 EXTRA_BARS.push({
-  id: "screenspace", name: "ScreenSpace Toolbar", respawn: 30, manual: true,
+  id: "screenspace", name: "ScreenSpace Toolbar", respawn: 30,
   bundled: "it promised to make more room for web pages",
   items: s => [
     logo("⇕ ScreenSpace", "color:#1d7f22"),

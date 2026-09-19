@@ -9,7 +9,7 @@
   function goAway() { bye = true; setTimeout(() => { bye = false; ui.buddy.line = null; }, 1800); }
 </script>
 
-{#if ui.buddy}
+{#if ui.buddy && !ui.ended}
   {#key ui.buddy.n}
     <div class="buddy bounce">
       <button class="buddy-body" aria-label="BuddyBonz" onclick={() => buddy()}>{@html BUDDY_SVG}</button>

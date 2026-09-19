@@ -39,6 +39,12 @@
         ]
   ).filter(Boolean).join(" "));
 
+  // Phones get the system share sheet; everything else copies the line.
+  const canShare = typeof navigator !== "undefined" && !!navigator.share && matchMedia("(pointer: coarse)").matches;
+  async function shareIt() {
+    try { await navigator.share({ title: "Toolbar Season", text: share.replace(` ${URL}`, ""), url: `https://${URL}/` }); } catch {}
+  }
+
   let copied = $state(false);
   let box = $state();
   async function copy() {
@@ -69,7 +75,8 @@
 
   <textarea class="end-share" readonly rows="3" aria-label="Your result" bind:this={box}>{share}</textarea>
   <div class="btns">
-    <button class="xpbtn def" onclick={copy}>{copied ? "Copied" : "Copy result"}</button>
+    {#if canShare}<button class="xpbtn def" onclick={shareIt}>Share…</button>{/if}
+    <button class="xpbtn" class:def={!canShare} onclick={copy}>{copied ? "Copied" : "Copy result"}</button>
     <button class="xpbtn" onclick={() => location.reload()}>Start over</button>
     <button class="xpbtn" onclick={() => close("keep")}>Keep browsing</button>
   </div>
