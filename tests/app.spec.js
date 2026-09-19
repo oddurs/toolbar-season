@@ -32,7 +32,8 @@ test("closing a toolbar removes it and unchecks it in View › Toolbars", async 
   await page.getByRole("button", { name: "Close Yahooey! Companion" }).click();
   await expect(band(page, "yahooey")).toHaveCount(0);
   await page.locator('.mi[data-menu="View"]').click();
-  await page.locator(".menu .it", { hasText: "Toolbars" }).hover();
+  // Clicking (or tapping) an item with a submenu opens it, so this works on phones too.
+  await page.locator(".menu .it", { hasText: "Toolbars" }).click();
   const item = page.locator(".menu").last().locator(".it", { hasText: "Yahooey! Companion" });
   await expect(item.locator(".chk")).toHaveCount(0);
 });
