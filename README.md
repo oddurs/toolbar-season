@@ -6,7 +6,7 @@ An interactive Internet Explorer 6 window from October 2005 (Windows XP SP2), so
 
 Things to try:
 
-- Dial in. Turn your sound on first.
+- Dial in. Turn your sound on first; the modem does the whole handshake.
 - Close a toolbar with its **×**, then wait. Most of them come back.
 - Drag toolbars around by their grips.
 - **Tools › SpyScrub SE Scan** removes every toolbar. For a while.
@@ -20,7 +20,8 @@ Things to try:
 - Sign Kev's guestbook, and press play on his MIDI jukebox.
 - Reply to the TechGuyz thread. The moderator reads your toolbars.
 - Stay toolbar-free for a full minute.
-- Minimize the window now and then. Some ads open behind it.
+- Drag and resize the window. Some ads open behind it, and the toolbars left shortcuts on the desktop.
+- Close IE with the × and reopen it from the desktop.
 - The menus work from the keyboard: Alt+letter, then the arrow keys.
 - Click an ad, punch the monkey, or say "Don't Install" to a security prompt.
 - Try changing your home page in **Tools › Internet Options**.
@@ -38,7 +39,8 @@ npm install
 npm run dev       # dev server at http://localhost:5173
 npm run build     # static build in dist/
 npm run preview   # serve the build
-npm test          # end-to-end tests (Playwright, uses your installed Chrome)
+npm test          # end-to-end and accessibility tests (Playwright + axe, uses your installed Chrome)
+npm run og        # regenerate public/og.png, the link preview image
 ```
 
 Add `?test` to the URL to switch off the random ads, pop-ups and self-installs and make loading instant. The tests use it.

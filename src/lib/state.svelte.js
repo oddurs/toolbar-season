@@ -50,6 +50,9 @@ export const ui = $state({
   viewPct: 0,
 
   connected: false,
+  rect: null, // { x, y, w, h } once the window has been moved or resized
+  closed: false,
+  ieOnDesktop: false, // the desktop icon appears the first time you close IE
   guestbook: [], // entries signed by you (and the spam bot), saved in localStorage
   forumReplies: [], // this session's posts on the TechGuyz thread
   pwAsked: false,

@@ -77,7 +77,7 @@ export const TOOLBARS = [
     ],
   },
   {
-    id: "mws", name: "MyWebSurch · Smiley Centrale", respawn: 12,
+    id: "mws", shortcut: "Smiley Centrale", name: "MyWebSurch · Smiley Centrale", respawn: 12,
     bundled: "“FREE Smileys for Messenger & Email!!” (you clicked one ad, once)",
     items: () => [
       logo(`My<span style="color:#ff7a00">Web</span>Surch`, "color:#1d5bbf"),
@@ -90,7 +90,7 @@ export const TOOLBARS = [
     ],
   },
   {
-    id: "hotbarr", name: "HotBarr", respawn: 20,
+    id: "hotbarr", shortcut: "HotBarr Deals", name: "HotBarr", respawn: 20,
     bundled: "a “skin” for your toolbar, which was itself a toolbar",
     items: () => [
       logo("HotBarr", "background:linear-gradient(#ffcc00,#e04b1d);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic"),
@@ -112,7 +112,7 @@ export const TOOLBARS = [
     ],
   },
   {
-    id: "aoll", name: "America Offline Toolbar", respawn: 50,
+    id: "aoll", shortcut: "America Offline", name: "America Offline Toolbar", respawn: 50,
     bundled: "a CD that came in a cereal box (1,025 free hours!)",
     items: () => [
       logo("▲ America Offline", "color:#0b3d91"),
@@ -124,7 +124,7 @@ export const TOOLBARS = [
     ],
   },
   {
-    id: "zingo", name: "Zingo Search Assistant", respawn: 15,
+    id: "zingo", shortcut: "FREE Games!", name: "Zingo Search Assistant", respawn: 15,
     bundled: "a codec pack needed to watch one (1) video of a dancing hamster",
     items: () => [
       logo("zingo", "color:#0a8a8a"), txt("Search Assistant", "muted"),
@@ -134,7 +134,7 @@ export const TOOLBARS = [
     ],
   },
   {
-    id: "ebuy", name: "eBuy Toolbar", respawn: 70,
+    id: "ebuy", shortcut: "eBuy", name: "eBuy Toolbar", respawn: 70,
     bundled: "you won a PalmPilot for $41 once",
     items: () => [
       logo(`<span style="color:#e53238">e</span><span style="color:#0064d2">B</span><span style="color:#f5af02">u</span><span style="color:#86b817">y</span>`),
@@ -155,7 +155,7 @@ export const TOOLBARS = [
     ],
   },
   {
-    id: "dlboost", name: "DownloadBoost 3000", respawn: 40,
+    id: "dlboost", shortcut: "DownloadBoost 3000", name: "DownloadBoost 3000", respawn: 40,
     bundled: "“Speed up your downloads by 300%!” (it did not)",
     items: () => [
       logo("⚡DownloadBoost<sup>3000</sup>", "color:#c00;font-style:italic"),
@@ -184,7 +184,7 @@ export const TOOLBARS = [
 // Bars that arrive later: through an ActiveX prompt, or all by themselves.
 export const EXTRA_BARS = [
   {
-    id: "coupon", name: "CouponCrusher Toolbar", respawn: 20,
+    id: "coupon", shortcut: "CouponCrusher", name: "CouponCrusher Toolbar", respawn: 20,
     bundled: "the “Yes” button on a dialog whose other button also said Yes",
     items: () => [logo("$ CouponCrusher", "color:#2a8a00"), txt("We found <b>0</b> coupons for this page!"), pop("Show Deals", "winner", I.cart)],
   },
@@ -194,7 +194,7 @@ export const EXTRA_BARS = [
     items: () => [logo("✦ StarField", "color:#4b2aa8"), search("starfield", { label: "Find", w: 100 }), txt("Your homepage has been improved.", "muted")],
   },
   {
-    id: "bonzibar", name: "BuddyBonz Toolbar", respawn: 20,
+    id: "bonzibar", shortcut: "BuddyBonz", name: "BuddyBonz Toolbar", respawn: 20,
     bundled: "your new best friend",
     items: () => [
       logo("BuddyBonz", "color:#7b3fb8"),
@@ -203,7 +203,7 @@ export const EXTRA_BARS = [
     ],
   },
   {
-    id: "speeddr", name: "PC Speed Doctor", respawn: 25,
+    id: "speeddr", shortcut: "PC Speed Doctor", name: "PC Speed Doctor", respawn: 25,
     bundled: "a pop-up that said your PC was slow (it was, because of the pop-ups)",
     items: () => [
       logo("+ PC Speed Doctor", "color:#c00"),
@@ -212,7 +212,7 @@ export const EXTRA_BARS = [
     ],
   },
   {
-    id: "lyricz", name: "LyricZilla Toolbar", respawn: 25,
+    id: "lyricz", shortcut: "LyricZilla", name: "LyricZilla Toolbar", respawn: 25,
     bundled: "you looked up the words to one pop-punk song",
     items: () => [logo("♪ LyricZilla", "color:#e0306a"), search("lyricz", { ph: "Song or artist", label: "Find Lyrics", w: 120 }), txt("Now playing: nothing. Lyrics found: 0. Ads found: 3.", "muted")],
   },

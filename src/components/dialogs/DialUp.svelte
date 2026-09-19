@@ -4,7 +4,7 @@
   import Dialog from "../Dialog.svelte";
   import { I } from "../../lib/icons.js";
   import { connected, offline } from "../../lib/actions.js";
-  import { modem, wakeAudio } from "../../lib/sound.js";
+  import { modem } from "../../lib/sound.js";
   import { TEST } from "../../lib/state.svelte.js";
 
   let { dlg, close } = $props();
@@ -14,17 +14,15 @@
   const timers = [];
   onDestroy(() => timers.forEach(clearTimeout));
 
-  function dial() {
-    wakeAudio();
+  // XP's order: "Dialing" for the whole handshake, then the login steps.
+  async function dial() {
     phase = 0;
-    // Let the resumed audio context start before scheduling the handshake.
-    timers.push(setTimeout(() => {
-      const len = TEST ? 0 : Math.max(modem(), 4.5) * 1000;
-      timers.push(setTimeout(() => (phase = 1), len * 0.55));
-      timers.push(setTimeout(() => (phase = 2), len * 0.85));
-      timers.push(setTimeout(() => (phase = 3), len));
-      timers.push(setTimeout(() => { close("ok"); connected(); }, len + 700));
-    }, 60));
+    const secs = TEST ? 0 : (await modem()) || 4.5;
+    const at = [secs, secs + 2.2, secs + 3.8].map(s => s * 1000);
+    timers.push(setTimeout(() => (phase = 1), at[0]));
+    timers.push(setTimeout(() => (phase = 2), at[1]));
+    timers.push(setTimeout(() => (phase = 3), at[2]));
+    timers.push(setTimeout(() => { close("ok"); connected(); }, TEST ? 0 : at[2] + 700));
   }
   function cancel() { close("cancel"); offline(); }
 </script>

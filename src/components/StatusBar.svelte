@@ -17,7 +17,7 @@
     {#if ui.cleanSince}
       <div class="st-clean" title="Best: {clock(ui.bestClean)}">{@html I.shield}Toolbar-free for <b>{clock(ui.cleanFor)}</b></div>
     {:else}
-      <div class="st-prog"><i style:width="{Math.min(ui.progress, 100)}%"></i></div>
+      <div class="st-prog"><i style:width="{Math.round(Math.min(ui.progress, 100) / (100 / 12)) * 9}px"></i></div>
     {/if}
     <div class="st-view" title="{adware().length} third-party toolbars installed · Best toolbar-free run: {clock(ui.bestClean)}">
       Page:&nbsp;<b class:bad={ui.viewPct < 25}>{ui.viewPct}%</b>&nbsp;of window

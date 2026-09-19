@@ -240,8 +240,8 @@ input.box {
   display: flex; align-items: center; gap: 4px; padding: 0 4px; white-space: nowrap; overflow: hidden;
 }
 .status .st-msg { flex: 1; min-width: 0; }
-.status .st-prog { width: 110px; padding: 2px; }
-.status .st-prog i { display: block; height: 100%; width: 0; background: repeating-linear-gradient(90deg, #2ec62e 0 7px, transparent 7px 9px); transition: width .2s; }
+.status .st-prog { width: 116px; padding: 2px; }
+.status .st-prog i { display: block; height: 100%; width: 0; background: repeating-linear-gradient(90deg, #2ec62e 0 7px, transparent 7px 9px); }
 .status .st-view { width: 150px; }
 .status .st-zone { width: 120px; }
 .status svg { width: 16px; height: 16px; flex: none; }
@@ -380,7 +380,7 @@ textarea.source { width: 100%; height: 220px; box-sizing: border-box; font: 12px
 .portal-body .popular { border: 1px solid #9cf; background: #eef6ff; }
 .portal-body .winner { border: 2px dashed #c00; text-align: center; cursor: pointer; }
 .portal-body p { margin: 10px 0 4px; }
-.fine { color: #888; font-size: 10px; }
+.fine { color: #6e6e6e; font-size: 10px; }
 
 .results { padding: 8px 12px; font: 13px Arial, sans-serif; }
 .results-head { border-bottom: 1px solid #36c; padding-bottom: 4px; margin-bottom: 6px; }
@@ -596,3 +596,26 @@ label.chk { display: flex; gap: 4px; align-items: center; }
 .quickreply { display: grid; gap: 4px; margin-top: 8px; background: #e8eef7; border: 1px solid #c3cfe0; padding: 8px; font: 12px Verdana, sans-serif; }
 .quickreply .box { width: 100%; box-sizing: border-box; font: 12px Verdana, sans-serif; }
 .quickreply .xpbtn { justify-self: start; }
+
+/* ---------- the window moves; the desktop has icons ---------- */
+.win.floating { inset: auto; margin: 0; }
+.rz { position: absolute; z-index: 3; }
+.rz-n, .rz-s { left: 8px; right: 8px; height: 5px; cursor: ns-resize; }
+.rz-n { top: -2px; } .rz-s { bottom: -2px; }
+.rz-e, .rz-w { top: 8px; bottom: 8px; width: 5px; cursor: ew-resize; }
+.rz-e { right: -2px; } .rz-w { left: -2px; }
+.rz-ne, .rz-nw, .rz-se, .rz-sw { width: 10px; height: 10px; }
+.rz-ne { top: -2px; right: -2px; cursor: nesw-resize; } .rz-sw { bottom: -2px; left: -2px; cursor: nesw-resize; }
+.rz-nw { top: -2px; left: -2px; cursor: nwse-resize; } .rz-se { bottom: -2px; right: -2px; cursor: nwse-resize; }
+.win > .titlebar { cursor: default; touch-action: none; }
+.dlg .titlebar, .grip, .rz { touch-action: none; }
+body.dragging-win, body.dragging-win * { user-select: none !important; }
+body.dragging-win iframe { pointer-events: none; }
+
+.desktop { position: fixed; top: 10px; left: 8px; z-index: 0; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; flex-wrap: wrap; gap: 14px 10px; max-height: calc(100% - 50px); }
+.desk-icon { width: 78px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 2px; border: 1px dotted transparent; background: none; color: #fff; font: 11px var(--ui); text-align: center; cursor: default; }
+.desk-icon .desk-svg { width: 32px; height: 32px; filter: drop-shadow(1px 2px 1px rgba(0,0,0,.4)); }
+.desk-icon span { padding: 0 2px; text-shadow: 1px 1px 1px #000, 0 0 2px #000; line-height: 1.25; }
+.desk-icon.sel span { background: #316ac5; text-shadow: none; }
+.desk-icon.sel .desk-svg { filter: drop-shadow(1px 2px 1px rgba(0,0,0,.4)) sepia(1) hue-rotate(180deg) saturate(3) brightness(.8); }
+.desk-icon:focus-visible { border-color: #fff; outline: none; }

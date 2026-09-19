@@ -215,3 +215,68 @@ test.describe("on a phone", () => {
     expect(win.x + win.width).toBeLessThanOrEqual(420);
   });
 });
+
+test("the window can be dragged and resized", async ({ page }) => {
+  await connect(page);
+  const win = page.locator(".win");
+  const before = await win.boundingBox();
+  const bar = page.locator(".win > .titlebar .ttl");
+  const b = await bar.boundingBox();
+  await page.mouse.move(b.x + 40, b.y + 8);
+  await page.mouse.down();
+  await page.mouse.move(b.x + 40 - 60, b.y + 8 + 40, { steps: 5 });
+  await page.mouse.up();
+  const moved = await win.boundingBox();
+  expect(Math.round(moved.x - before.x)).toBe(-60);
+  expect(Math.round(moved.y - before.y)).toBe(40);
+
+  const corner = await page.locator(".rz-se").boundingBox();
+  await page.mouse.move(corner.x + 5, corner.y + 5);
+  await page.mouse.down();
+  await page.mouse.move(corner.x + 5 - 200, corner.y + 5 - 100, { steps: 5 });
+  await page.mouse.up();
+  const resized = await win.boundingBox();
+  expect(Math.round(resized.width)).toBe(Math.round(moved.width) - 200);
+  expect(Math.round(resized.height)).toBe(Math.round(moved.height) - 100);
+
+  // Never smaller than the minimum.
+  const c2 = await page.locator(".rz-se").boundingBox();
+  await page.mouse.move(c2.x + 5, c2.y + 5);
+  await page.mouse.down();
+  await page.mouse.move(c2.x - 2000, c2.y - 2000, { steps: 3 });
+  await page.mouse.up();
+  const tiny = await win.boundingBox();
+  expect(tiny.width).toBeGreaterThanOrEqual(420);
+  expect(tiny.height).toBeGreaterThanOrEqual(320);
+});
+
+test("closing IE leaves an icon on the desktop that reopens it", async ({ page }) => {
+  await connect(page);
+  await expect(page.getByRole("button", { name: /^Internet Explorer/ })).toHaveCount(0);
+  await page.locator(".win > .titlebar").getByRole("button", { name: "Close" }).click();
+  await expect(page.locator(".win")).toBeHidden();
+  const icon = page.getByRole("button", { name: /^Internet Explorer/ });
+  await icon.click();
+  await expect(icon).toHaveClass(/sel/);
+  await icon.dblclick();
+  await expect(page.locator(".win")).toBeVisible();
+  await expect(title(page)).toContainText("Home Search Portal");
+  // The adware left its own shortcuts, too.
+  await expect(page.locator(".desk-icon", { hasText: "PC Speed Doctor" })).toHaveCount(0);
+  await expect(page.locator(".desk-icon", { hasText: "Smiley Centrale" })).toHaveCount(1);
+});
+
+test("the progress bar fills in whole blocks", async ({ page }) => {
+  await connect(page);
+  const widths = new Set();
+  await page.evaluate(() => {
+    window.__w = [];
+    const bar = document.querySelector(".st-prog i");
+    new MutationObserver(() => window.__w.push(bar.style.width)).observe(bar, { attributes: true });
+  });
+  await page.locator("#addr").fill("www.hamsterparty.fake");
+  await page.locator("#addr").press("Enter");
+  await expect(title(page)).toContainText("HAMSTER");
+  for (const w of await page.evaluate(() => window.__w)) widths.add(w);
+  for (const w of widths) expect(parseInt(w || "0") % 9).toBe(0);
+});

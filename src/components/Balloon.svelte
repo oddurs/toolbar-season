@@ -7,6 +7,9 @@
   let pos = $state(null);
   $effect(() => {
     if (!ui.tip) return;
+    // Follow the window when it moves or resizes.
+    ui.rect && [ui.rect.x, ui.rect.y, ui.rect.w, ui.rect.h];
+    ui.max; ui.min;
     const place = () => {
       const r = document.querySelector(".st-view")?.getBoundingClientRect();
       pos = r ? { right: Math.max(8, innerWidth - r.right - 10), bottom: innerHeight - r.top + 12 } : null;

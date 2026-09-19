@@ -29,8 +29,11 @@ export function popupInfo() {
 
 // ---------------- navigation ----------------
 let loadTimer;
-// Every toolbar phones home on every page, so each one makes loading slower.
-// The status bar narrates what the page is waiting on, as IE's did.
+// IE6's progress bar filled in whole green blocks: it jumped a block or two
+// at a time, stalled while the server thought about it, and usually hung near
+// the end. Every toolbar phones home on every page, so each one adds to the
+// stalls, and the status bar narrates what the page is waiting on.
+const BLOCK = 100 / 12;
 export function load(done, url = ui.url) {
   clearTimeout(loadTimer);
   ui.loading = true;
@@ -38,11 +41,12 @@ export function load(done, url = ui.url) {
   ui.pageErrors = false;
   setStatus(`Opening page ${url}...`);
   const bars = adware().map(b => b.id);
-  const drag = 1 + bars.length * 0.12;
+  const slow = 0.45 + bars.length * 0.07;
   let items = 3 + bars.length;
   const step = () => {
-    ui.progress += rand(8, 26) / drag;
     if (ui.progress >= 100) { ui.loading = false; ui.progress = 0; setStatus(); return done(); }
+    const r = Math.random();
+    ui.progress = Math.min(100, ui.progress + (r < 0.25 ? 0 : r < 0.7 ? 1 : r < 0.92 ? 2 : 3) * BLOCK);
     if (ui.progress > 20 && bars.length) {
       const id = pick(bars);
       items = Math.max(1, items - (Math.random() < 0.5 ? 1 : 0));
@@ -53,7 +57,11 @@ export function load(done, url = ui.url) {
         `Website found. Waiting for reply...`,
       ]));
     }
-    loadTimer = setTimeout(step, TEST ? 0 : rand(50, 160));
+    let wait = rand(40, 180);
+    if (Math.random() < 0.1) wait += rand(300, 900);                        // the server stalls
+    if (ui.progress > 70 && Math.random() < 0.3) wait += rand(250, 800);   // "almost done"
+    if (ui.progress >= 100) wait = 150;                                     // show the full bar briefly
+    loadTimer = setTimeout(step, TEST ? 0 : wait * slow);
   };
   step();
 }
@@ -217,6 +225,22 @@ export function openPop(kind, { exit = false, under = false } = {}) {
       if (why === "x" && !exit && Math.random() < 0.3 && adware().length) setTimeout(() => openPop(pick(["winner", "scare", "screensaver"]), { exit: true }), 400);
     },
   });
+}
+
+// The title bar's close button: IE goes away and leaves an icon on the desktop.
+export function closeIE() {
+  closeMenu();
+  ui.closed = true;
+  ui.ieOnDesktop = true;
+  ui.tip = false;
+}
+export function openIE() {
+  if (!ui.closed) return;
+  ui.closed = false;
+  ui.rect = null;
+  ui.max = ui.min = false;
+  if (ui.connected) go(ui.home);
+  else dialUp();
 }
 
 export function crash() {

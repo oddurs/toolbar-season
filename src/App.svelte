@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { ui, toolbarCount, bars, isOn, adware } from "./lib/state.svelte.js";
-  import { start, act, openMenu, closeMenu, crash, wakeAudio, checkSqueeze, trackClean, setMuted, escapeDialog } from "./lib/actions.js";
+  import { start, act, openMenu, closeMenu, closeIE, wakeAudio, checkSqueeze, trackClean, setMuted, escapeDialog } from "./lib/actions.js";
   import { pageMenu } from "./lib/pagemenu.js";
   import { MENUS } from "./lib/menus.js";
   import { I } from "./lib/icons.js";
@@ -14,6 +14,7 @@
   import DialogHost from "./components/DialogHost.svelte";
   import Buddy from "./components/Buddy.svelte";
   import Balloon from "./components/Balloon.svelte";
+  import Desktop from "./components/Desktop.svelte";
 
   let winEl = $state(), pageEl = $state();
   const bottomBars = $derived(bars().filter(b => b.place === "bottom" && isOn(b.id)));
@@ -75,6 +76,46 @@
       if (!escapeDialog()) act.stop();
     }
   }
+  // Move and resize the window. The first drag pins it where it is on screen.
+  const floating = $derived(ui.rect && !ui.max && !ui.min && !ui.full);
+  function pin() {
+    if (ui.rect) return;
+    const r = winEl.getBoundingClientRect();
+    ui.rect = { x: r.left, y: r.top, w: r.width, h: r.height };
+  }
+  function dragWin(e) {
+    if (e.button !== 0 || e.target.closest("button") || ui.max || ui.min || ui.full) return;
+    e.preventDefault();
+    pin();
+    const sx = e.clientX - ui.rect.x, sy = e.clientY - ui.rect.y;
+    track(ev => {
+      ui.rect.x = Math.max(80 - ui.rect.w, Math.min(innerWidth - 80, ev.clientX - sx));
+      ui.rect.y = Math.max(0, Math.min(innerHeight - 30, ev.clientY - sy));
+    });
+  }
+  function resize(e, edge) {
+    if (e.button !== 0 || ui.max || ui.min || ui.full) return;
+    e.preventDefault();
+    e.stopPropagation();
+    pin();
+    const start = { ...ui.rect }, sx = e.clientX, sy = e.clientY, MIN_W = 420, MIN_H = 320;
+    track(ev => {
+      const dx = ev.clientX - sx, dy = ev.clientY - sy, r = { ...start };
+      if (edge.includes("e")) r.w = Math.max(MIN_W, start.w + dx);
+      if (edge.includes("s")) r.h = Math.max(MIN_H, start.h + dy);
+      if (edge.includes("w")) { r.w = Math.max(MIN_W, start.w - dx); r.x = start.x + start.w - r.w; }
+      if (edge.includes("n")) { r.h = Math.max(MIN_H, start.h - dy); r.y = Math.max(0, start.y + start.h - r.h); }
+      ui.rect = r;
+    });
+  }
+  function track(move) {
+    const up = () => { removeEventListener("pointermove", move); removeEventListener("pointerup", up); document.body.classList.remove("dragging-win"); };
+    document.body.classList.add("dragging-win");
+    addEventListener("pointermove", move);
+    addEventListener("pointerup", up);
+  }
+  const EDGES = ["n", "s", "e", "w", "ne", "nw", "se", "sw"];
+
   // Dismiss menus on pointer-down, before the click that may open another one.
   function onpointerdown(e) {
     wakeAudio();
@@ -84,14 +125,32 @@
 
 <svelte:window {onkeydown} {onpointerdown} />
 
-<div class="win" class:max={ui.max || ui.full} class:min={ui.min} class:loading={ui.loading} hidden={ui.crashed} bind:this={winEl}>
+<Desktop />
+
+<main
+  class="win"
+  aria-label="Internet Explorer"
+  class:max={ui.max || ui.full}
+  class:min={ui.min}
+  class:floating
+  class:loading={ui.loading}
+  hidden={ui.crashed || ui.closed}
+  bind:this={winEl}
+  style:left={floating ? `${ui.rect.x}px` : null}
+  style:top={floating ? `${ui.rect.y}px` : null}
+  style:width={floating ? `${ui.rect.w}px` : null}
+  style:height={floating ? `${ui.rect.h}px` : null}
+>
+  {#if !ui.max && !ui.min && !ui.full}
+    {#each EDGES as edge}<div class="rz rz-{edge}" aria-hidden="true" onpointerdown={e => resize(e, edge)}></div>{/each}
+  {/if}
   {#if !ui.full}
-    <div class="titlebar" role="presentation" ondblclick={() => (ui.max = !ui.max)}>
+    <div class="titlebar" role="presentation" onpointerdown={dragWin} ondblclick={() => (ui.max = !ui.max)}>
       {@html I.ie.replace("viewBox", 'class="ie-ico" viewBox')}
       <span class="ttl">{ui.title}</span>
       <button class="cap" aria-label="Minimize" onclick={() => (ui.min = !ui.min)}>{@html I.minim}</button>
       <button class="cap" aria-label="Maximize" onclick={() => (ui.max = !ui.max)}>{@html I.maxim}</button>
-      <button class="cap close" aria-label="Close" onclick={crash}>{@html I.close}</button>
+      <button class="cap close" aria-label="Close" onclick={closeIE}>{@html I.close}</button>
     </div>
   {/if}
 
@@ -116,10 +175,12 @@
   </div>
 
   <StatusBar />
-</div>
+</main>
 
+<footer>
 <button class="sound-toggle" onclick={() => setMuted(!ui.muted)} aria-pressed={!ui.muted}>{@html ui.muted ? I.muted : I.speaker} Sound: {ui.muted ? "Off" : "On"}</button>
 <div class="era">October 2005 · Windows XP SP2 · Internet Explorer 6.0 · {count ? `${count} toolbar${count === 1 ? "" : "s"} and counting` : "0 toolbars (for now)"}</div>
+</footer>
 
 {#if ui.menu}{#key ui.menu}<Menu items={ui.menu.items} x={ui.menu.x} y={ui.menu.y} onswitch={ui.menu.owner ? switchMenu : null} />{/key}{/if}
 <Balloon />

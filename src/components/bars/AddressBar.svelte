@@ -53,8 +53,11 @@
     spellcheck="false"
     autocomplete="off"
     aria-label="Address"
+    role="combobox"
+    aria-controls="addr-suggestions"
     aria-autocomplete="list"
     aria-expanded={open && suggestions.length > 0}
+    aria-activedescendant={open && sel >= 0 ? `addr-opt-${sel}` : undefined}
     bind:value={typed}
     {oninput}
     {onkeydown}
@@ -65,13 +68,14 @@
 <button class="tb go" onclick={() => go(typed)}>{@html I.go}Go</button>
 
 {#if open && suggestions.length}
-  <div class="autocomplete" role="listbox" style:left="{rect.left}px" style:top="{rect.bottom}px" style:width="{rect.width}px">
+  <div class="autocomplete" id="addr-suggestions" role="listbox" style:left="{rect.left}px" style:top="{rect.bottom}px" style:width="{rect.width}px">
     {#each suggestions as s, i}
       <div
         class="ac-item"
         class:hot={i === sel}
         class:spons={s.sponsored}
         role="option"
+        id="addr-opt-{i}"
         aria-selected={i === sel}
         tabindex="-1"
         onmousedown={e => { e.preventDefault(); sel = i; submit(); }}

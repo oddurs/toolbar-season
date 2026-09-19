@@ -73,24 +73,95 @@ export function navClick() {
 
 const DTMF = { 1: [697, 1209], 2: [697, 1336], 3: [697, 1477], 4: [770, 1209], 5: [770, 1336], 6: [770, 1477], 7: [852, 1209], 8: [852, 1336], 9: [852, 1477], 0: [941, 1336] };
 
-// Dial tone, the number, then the handshake. Returns its length in seconds.
-export function modem(number = "5550142") {
-  if (ui.muted) return 0;
+// Resume audio inside the click that asked for it, and wait until it's live.
+// (Browsers only allow sound after a user gesture, and resuming is async.)
+export async function ready() {
+  if (ui.muted) return null;
   try {
     const c = audio();
-    if (c.state !== "running") return 0;
-    let t = c.currentTime + 0.05;
-    tone([350, 440], t, 0.9, 0.04); t += 1;
-    for (const d of number) { tone(DTMF[d], t, 0.09, 0.05); t += 0.14; }
-    t += 0.6;
-    tone([2100], t, 1.2, 0.035); t += 1.25;                          // answer tone
-    for (let i = 0; i < 6; i++) tone([1200 + (i % 2) * 1200], t + i * 0.12, 0.1, 0.03, "square");
-    t += 0.8;
-    tone([980, 1650], t, 0.5, 0.025, "sawtooth"); t += 0.5;          // the famous "bong"
-    noise(t, 0.4, 0.05, 1200); tone([2250], t, 0.4, 0.02); t += 0.45;
-    noise(t, 1.6, 0.06, 1800); t += 1.6;                              // scrambled training hiss
-    return t - c.currentTime;
-  } catch { return 0; }
+    if (c.state !== "running") await c.resume();
+    return c.state === "running" ? c : null;
+  } catch { return null; }
+}
+
+// A 56k modem dialing and connecting (V.90), heard through a phone line.
+// Resolves to the handshake's length in seconds, or 0 if sound is off.
+export async function modem(number = "5550142") {
+  const c = await ready();
+  if (!c) return 0;
+
+  // The phone line: 300-3400 Hz, a little saturation, then a compressor.
+  const line = c.createGain();
+  const hp = c.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 300;
+  const lp = c.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 3400;
+  const sat = c.createWaveShaper();
+  sat.curve = Float32Array.from({ length: 1024 }, (_, i) => Math.tanh(((i / 1023) * 2 - 1) * 1.6));
+  const comp = c.createDynamicsCompressor();
+  const out = c.createGain(); out.gain.value = 0.55;
+  line.connect(hp).connect(lp).connect(sat).connect(comp).connect(out).connect(c.destination);
+
+  const osc = (freqs, t, dur, gain, type = "sine") => {
+    const g = c.createGain();
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(gain, t + 0.008);
+    g.gain.setValueAtTime(gain, t + dur - 0.008);
+    g.gain.linearRampToValueAtTime(0, t + dur);
+    g.connect(line);
+    for (const f of freqs) { const o = c.createOscillator(); o.type = type; o.frequency.value = f; o.connect(g); o.start(t); o.stop(t + dur); }
+  };
+  const hiss = (t, dur, gain, lo = 300, hi = 3400) => {
+    const len = Math.ceil(c.sampleRate * dur), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    const src = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+    src.buffer = buf; f.type = "bandpass"; f.frequency.value = Math.sqrt(lo * hi); f.Q.value = Math.sqrt(lo * hi) / (hi - lo);
+    g.gain.value = gain;
+    src.connect(f).connect(g).connect(line); src.start(t); src.stop(t + dur);
+    return g;
+  };
+  // V.21 FSK at 300 baud: the warbling "bong" of the two modems introducing themselves.
+  const fsk = (t, dur, mark, space, gain) => {
+    const o = c.createOscillator(), g = c.createGain();
+    for (let x = t; x < t + dur; x += 1 / 300) o.frequency.setValueAtTime(Math.random() < 0.55 ? mark : space, x);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + 0.01);
+    g.gain.setValueAtTime(gain, t + dur - 0.01); g.gain.linearRampToValueAtTime(0, t + dur);
+    o.connect(g).connect(line); o.start(t); o.stop(t + dur);
+  };
+  // ANSam: 2100 Hz answer tone, 15 Hz amplitude wobble, phase flipped every 450 ms.
+  const ansam = (t, dur, gain) => {
+    for (let s = t, k = 0; s < t + dur; s += 0.45, k++) {
+      const e = Math.min(t + dur, s + 0.45);
+      const o = c.createOscillator(), g = c.createGain(), lfo = c.createOscillator(), depth = c.createGain();
+      o.frequency.value = 2100; g.gain.value = (k % 2 ? -1 : 1) * gain;
+      lfo.frequency.value = 15; depth.gain.value = gain * 0.2;
+      lfo.connect(depth).connect(g.gain);
+      o.connect(g).connect(line);
+      o.start(s); o.stop(e); lfo.start(s); lfo.stop(e);
+    }
+  };
+  // V.34 line probing: a chord of tones every 150 Hz, the metallic "ding".
+  const probe = (t, dur, gain) => {
+    const freqs = [];
+    for (let f = 150; f <= 3750; f += 150) if (![900, 1200, 1800, 2400].includes(f)) freqs.push(f);
+    osc(freqs, t, dur, gain / Math.sqrt(freqs.length));
+  };
+
+  let t = c.currentTime + 0.05;
+  const start = t;
+  hiss(t, 0.03, 0.5); t += 0.25;                                   // off-hook click
+  hiss(t, 13, 0.012);                                             // line noise under everything
+  osc([350, 440], t, 1.4, 0.16); t += 1.5;                        // dial tone
+  for (const d of number) { osc(DTMF[d], t, 0.085, 0.2); t += 0.165; }
+  t += 1.0;                                                       // switching...
+  osc([440, 480], t, 1.3, 0.12); t += 1.3;                        // one ring
+  hiss(t, 0.02, 0.4); t += 0.3;                                   // picked up
+  ansam(t, 2.6, 0.2); t += 2.6;                                   // answer tone
+  fsk(t, 0.75, 1180, 980, 0.16); fsk(t + 0.12, 0.7, 1850, 1650, 0.12); t += 0.9; // CM/JM "bong"
+  probe(t, 0.18, 0.5); t += 0.35; probe(t, 0.55, 0.5); t += 0.65; // line probing chord
+  osc([1200], t, 0.12, 0.14, "square"); osc([2400], t + 0.12, 0.1, 0.1, "square"); t += 0.3;
+  const train = hiss(t, 2.8, 0.55, 400, 3200);                     // "kssshhhh": scrambled training
+  train.gain.setValueAtTime(0.55, t + 1.3); train.gain.linearRampToValueAtTime(0.2, t + 1.4); train.gain.linearRampToValueAtTime(0.6, t + 1.55);
+  t += 2.8;                                                       // connected; the speaker mutes
+  return t - start;
 }
 
 // Pachelbel's Canon, the most GeoCities of MIDI files (public domain).
