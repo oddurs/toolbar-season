@@ -619,3 +619,23 @@ body.dragging-win iframe { pointer-events: none; }
 .desk-icon.sel span { background: #316ac5; text-shadow: none; }
 .desk-icon.sel .desk-svg { filter: drop-shadow(1px 2px 1px rgba(0,0,0,.4)) sepia(1) hue-rotate(180deg) saturate(3) brightness(.8); }
 .desk-icon:focus-visible { border-color: #fff; outline: none; }
+
+/* ---------- the endings ---------- */
+.end-h { font-size: 13px; }
+.end-stats { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #d0d0bf; font: 11px var(--ui); }
+.end-stats td { padding: 2px 6px; border-bottom: 1px solid #f0efe8; }
+.end-stats td:last-child { text-align: right; font-weight: bold; font-variant-numeric: tabular-nums; }
+.end-share { width: 100%; box-sizing: border-box; font: 11px var(--ui); resize: none; background: #fbfbf6; }
+.why p { margin: 0 0 8px; line-height: 1.45; }
+.about-link {
+  position: fixed; left: 108px; bottom: 4px; z-index: 5;
+  background: none; border: 0; padding: 1px 4px; color: #fff; font: 11px var(--ui);
+  text-decoration: underline; text-shadow: 1px 1px 1px rgba(0,0,0,.6); cursor: pointer;
+}
+@media (max-width: 640px) { .about-link { left: auto; right: 8px; } }
+
+/* The collapse: the page is gone and the window closes up around its toolbars. */
+.mid.gone { flex: 0 0 0; min-height: 0; overflow: hidden; }
+.win.collapsed { height: auto !important; bottom: auto; animation: thunk .35s ease-out; }
+.win.collapsed .rebar { flex: none; }
+@keyframes thunk { 0% { transform: scaleY(1.04); } 60% { transform: scaleY(.985); } }

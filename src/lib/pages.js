@@ -53,10 +53,12 @@ const ROUTES = [
 // Unknown sites: IE6 says it can't find them, unless a hijacker is installed,
 // in which case you get "helpful" search results instead.
 export function resolve(url) {
+  let hijacked = false;
   let r = ROUTES.find(r => r.match(url));
   if (!r && hijacker() && url.startsWith("http")) {
     url = searchUrl(hijacker(), url.split("/")[2].replace(/^www\./, ""));
     r = ROUTES[0];
+    hijacked = true;
   }
   if (!r) return { url, title: "Cannot find server", page: CannotDisplay, props: { url } };
   return {
@@ -64,6 +66,7 @@ export function resolve(url) {
     title: typeof r.title === "function" ? r.title(url) : r.title,
     page: r.page,
     mixed: !!r.mixed,
+    hijacked,
     props: r.props?.(url) || {},
   };
 }

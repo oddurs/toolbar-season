@@ -279,3 +279,30 @@ test("the progress bar fills in whole blocks", async ({ page }) => {
   for (const w of await page.evaluate(() => window.__w)) widths.add(w);
   for (const w of widths) expect(parseInt(w || "0") % 9).toBe(0);
 });
+
+test("the collapse ending: every toolbar installed, no room left", async ({ page }) => {
+  await connect(page);
+  await page.evaluate(() => window.__season.installAll());
+  const end = page.getByRole("dialog", { name: "Internet Explorer", exact: true });
+  await expect(end).toContainText("There is no room left to display this page.");
+  await expect(end.locator(".end-share")).toHaveValue(/I ended up with 21 toolbars and no web page at all\. I never clicked Install once\./);
+  await expect(page.locator(".mid")).toHaveClass(/gone/);
+  await end.getByRole("button", { name: "Keep browsing" }).click();
+  await expect(end).toHaveCount(0);
+  await expect(page.locator(".dlg")).toHaveCount(0);
+});
+
+test("the clean ending: zero toolbars for a full minute", async ({ page }) => {
+  await connect(page);
+  await page.evaluate(() => window.__season.removeAll());
+  const cert = page.getByRole("dialog", { name: "Certificate of Achievement" });
+  await expect(cert).toContainText("Certificate of Toolbar Removal", { timeout: 6000 });
+  await expect(cert.locator(".end-stats")).toContainText("Toolbars you uninstalled for good13");
+  await expect(cert.locator(".end-share")).toHaveValue(/kept it clean for a full minute/);
+});
+
+test("What is this? explains the piece", async ({ page }) => {
+  await connect(page);
+  await page.getByRole("button", { name: "What is this?" }).click();
+  await expect(page.getByRole("dialog", { name: "What is this?" })).toContainText("It ends one of two ways");
+});

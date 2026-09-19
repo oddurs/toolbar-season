@@ -4,10 +4,12 @@
   let { dlg, close } = $props();
 </script>
 
-<Dialog {dlg} {close} title="Why are there so many toolbars?" icon={I.info} w={430}>
-  <div style="line-height:1.5">
-    In 2005, toolbar companies paid software makers for every install. So free software came with a toolbar, pre-checked, on the fourth screen of the installer. The toolbars made money by changing your search engine and your home page, showing ads, and tracking where you went online.<br /><br />
-    Try it: close some (the <b>×</b> at the right of each bar), drag them around by their grips, run <b>Tools › SpyScrub SE Scan</b>, or untick them in <b>Tools › Manage Add-ons</b>. Then wait and see how many come back.
+<Dialog {dlg} {close} title="What is this?" icon={I.info} w={440}>
+  <div class="why">
+    <p><b>Toolbar Season</b> is Internet Explorer 6 on Windows XP, October 2005, when a free screensaver came with a toolbar and the toolbar came with three more.</p>
+    <p>Toolbar makers paid for every install, so every free download had one pre-ticked on the fourth screen of the installer. They changed your home page and your search engine, showed you ads, and watched where you went. Most people had several. Nobody remembers installing any of them.</p>
+    <p>Close them, scan for them, uninstall them. They come back. It ends one of two ways: the toolbars take the last of the page, or you keep the browser clean for one full minute.</p>
+    <p class="muted">Every name here is a parody. Sound is on; the switch is bottom left.</p>
   </div>
-  <div class="btns"><button class="xpbtn def" onclick={() => close("ok")}>Close</button></div>
+  <div class="btns"><button class="xpbtn def" onclick={() => close("ok")}>OK</button></div>
 </Dialog>

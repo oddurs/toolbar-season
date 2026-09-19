@@ -10,7 +10,7 @@ try {
   await page.goto("http://localhost:4174/?test");
   await page.getByRole("button", { name: "Dial" }).click();
   await page.locator(".win > .titlebar .ttl").filter({ hasText: "Home Search Portal" }).waitFor();
-  await page.addStyleTag({ content: ".blink { animation: none !important; } .era, .sound-toggle { display: none; }" });
+  await page.addStyleTag({ content: ".blink { animation: none !important; } .era, .sound-toggle, .about-link { display: none; }" });
   await page.waitForTimeout(300);
   await page.screenshot({ path: "public/og.png" });
   console.log("wrote public/og.png");

@@ -82,6 +82,7 @@ function scriptErrors(url) {
 export function go(raw, { push = true } = {}) {
   if (!ui.connected) return dialUp();
   const r = resolve(normalize(raw, ui.url));
+  if (r.hijacked) ui.stats.hijacked++;
   if (push) { ui.hist = [...ui.hist.slice(0, ui.idx + 1), r.url]; ui.idx++; }
   ui.url = r.url;
   navClick();
@@ -99,7 +100,7 @@ export function go(raw, { push = true } = {}) {
 
 export function doSearch(engine, q) {
   q = q?.trim() || pick(["toolbars", "free smileys", "why is my computer so slow"]);
-  if (hijacker() && hijacker() !== engine) setStatus(`Redirecting through ${ENGINES[hijacker()]}...`);
+  if (hijacker() && hijacker() !== engine) ui.stats.hijacked++, setStatus(`Redirecting through ${ENGINES[hijacker()]}...`);
   go(searchUrl(engine, q));
 }
 
@@ -131,14 +132,16 @@ export function closeBar(id, { silent = false } = {}) {
   respawns[id] = setTimeout(() => {
     if (isOn(id) || ui.uninstalled[id]) return;
     ui.on[id] = true; flash(id);
+    ui.stats.returned++;
     showInfo(`${b.name} was turned back on by its Update Service, to keep your browsing experience great.`, () => openDialog("addons"), "warn");
   }, (b.respawn + rand(0, b.respawn * 0.5)) * 1000);
 }
 export function openBar(id) { clearTimeout(respawns[id]); ui.on[id] = true; ui.installed[id] = true; }
 export const toggleBar = id => (isOn(id) ? closeBar(id) : openBar(id));
 
-export function installBar(b, msg) {
+export function installBar(b, msg, { self = false } = {}) {
   delete ui.uninstalled[b.id];
+  ui.stats[self ? "self" : "agreed"]++;
   if (!ui.order.includes(b.id)) ui.order.splice(ui.order.indexOf("coolbar"), 0, b.id);
   load(() => {
     ui.installed[b.id] = true; ui.on[b.id] = true; flash(b.id);
@@ -154,11 +157,13 @@ export function uninstall(id) {
   ui.on[id] = false;
   ui.installed[id] = false;
   ui.uninstalled[id] = true;
+  ui.stats.removed++;
   if (!b.respawn || TEST || Math.random() > 0.3) return false;
   respawns[id] = setTimeout(() => {
     if (!ui.uninstalled[id]) return;
     delete ui.uninstalled[id];
     ui.installed[id] = true; ui.on[id] = true; flash(id);
+    ui.stats.returned++;
     showInfo(`${b.name} Update Service noticed ${b.name} was missing, and reinstalled it for you.`, () => openDialog("arp"), "warn");
   }, rand(50000, 80000));
   return true;
@@ -215,6 +220,7 @@ export function activeX(bar, nag = 0) {
 }
 
 export function openPop(kind, { exit = false, under = false } = {}) {
+  ui.stats.ads++;
   const n = ui.dialogs.filter(d => d.kind === "pop").length;
   openDialog("pop", { kind, exit, under }, {
     under,
@@ -340,19 +346,40 @@ function adTick() {
 }
 
 // New toolbars keep arriving on their own, until there are none left to arrive.
+// Toolbars bring other toolbars. While at least one is installed, a new one
+// arrives every half minute or so; get down to none and the chain stops.
 function creep() {
   const next = EXTRA_BARS.find(b => !b.manual && !isInstalled(b.id) && !ui.uninstalled[b.id]);
-  if (!next) return;
-  if (ui.crashed || ui.dialogs.length) return setTimeout(creep, 8000);
-  installBar(next, `${next.name} was installed automatically as part of a recommended update. No action is needed.`);
-  setTimeout(creep, rand(55000, 90000));
+  if (!next || ui.ended) return;
+  if (ui.crashed || ui.closed || ui.dialogs.length || !adware().length) return setTimeout(creep, 5000);
+  const parent = pick(adware());
+  installBar(next, `${parent.name} installed ${next.name} as part of a recommended update. No action is needed.`, { self: true });
+  setTimeout(creep, rand(30000, 50000));
+}
+
+// ---------------- the two endings ----------------
+// Lose: every toolbar there is gets installed and the page has nowhere left
+// to go. Win: keep the browser free of them for one full minute.
+export const ADWARE_TOTAL = ALL_BARS.filter(b => !b.builtin && b.id !== "gooble").length;
+export const CLEAN_SECS = TEST ? 2 : 60;
+
+export function checkCollapse() {
+  if (!ui.ended && ui.connected && adware().length >= ADWARE_TOTAL) setTimeout(() => end("collapse"), 1200);
+}
+function end(kind) {
+  if (ui.ended) return;
+  ui.ended = kind;
+  closeMenu();
+  if (kind === "clean") { ding(); return openDialog("ending", { kind }); }
+  // The page folds away to nothing first, then IE explains.
+  setTimeout(() => { chord(); openDialog("ending", { kind }); }, TEST ? 0 : 1600);
 }
 
 // When the page is nearly gone, offer a toolbar that "makes more room". Once.
 export function checkSqueeze() {
-  if (ui.squeezeOffered || !ui.connected || ui.viewPct > 8 || ui.viewPct === 0) return;
+  if (ui.squeezeOffered || ui.ended || isInstalled("screenspace") || !ui.connected || ui.viewPct > 8 || ui.viewPct === 0) return;
   ui.squeezeOffered = true;
-  setTimeout(() => activeX(byId("screenspace")), 1200);
+  setTimeout(() => !ui.ended && !isInstalled("screenspace") && activeX(byId("screenspace")), 1200);
 }
 
 // Time spent with no third-party toolbars, and the best run so far.
@@ -364,7 +391,7 @@ export function trackClean() {
     ui.cleanFor = 0;
     cleanTimer = setInterval(() => {
       ui.cleanFor = Math.floor((Date.now() - ui.cleanSince) / 1000);
-      if (ui.cleanFor === 60 && !ui.certified) { ui.certified = true; ding(); openDialog("certificate", { removed: Object.keys(ui.uninstalled).length }); }
+      if (ui.cleanFor >= CLEAN_SECS) end("clean");
       if (ui.cleanFor > ui.bestClean) {
         ui.bestClean = ui.cleanFor;
         try { localStorage.setItem("toolbar-season:best", String(ui.bestClean)); } catch {}
@@ -385,6 +412,14 @@ export function dismissTip() {
 export function setMuted(m) {
   ui.muted = m;
   try { localStorage.setItem("toolbar-season:muted", m ? "1" : ""); } catch {}
+}
+
+// Test-only shortcuts, so the endings can be reached without a long wait.
+if (TEST && typeof window !== "undefined") {
+  window.__season = {
+    installAll: () => EXTRA_BARS.forEach(b => { if (!ui.order.includes(b.id)) ui.order.splice(ui.order.indexOf("coolbar"), 0, b.id); ui.installed[b.id] = true; ui.on[b.id] = true; }),
+    removeAll: () => adware().forEach(b => uninstall(b.id)),
+  };
 }
 
 export function start() {
@@ -408,7 +443,7 @@ export function connected() {
   started = true;
   setTimeout(popupInfo, 2500);
   setTimeout(adTick, 9000);
-  setTimeout(creep, 45000);
+  setTimeout(creep, 30000);
   setTimeout(() => buddy(BUDDY_LINES[0]), 22000);
 }
 

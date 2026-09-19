@@ -61,7 +61,9 @@ export const ui = $state({
   pageErrors: false,
   errors: [], // script errors on the current page
   hideNonsecure: false,
-  certified: false,
+  ended: null, // "collapse" | "clean", once one of the two endings has happened
+  // What happened to you, for the ending screen.
+  stats: { agreed: 0, self: 0, returned: 0, ads: 0, hijacked: 0, removed: 0 },
   uninstalled: {}, // removed through Add or Remove Programs
   muted: false,
   squeezeOffered: false,

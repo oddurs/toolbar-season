@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { ui, toolbarCount, bars, isOn, adware } from "./lib/state.svelte.js";
-  import { start, act, openMenu, closeMenu, closeIE, wakeAudio, checkSqueeze, trackClean, setMuted, escapeDialog } from "./lib/actions.js";
+  import { start, act, openMenu, closeMenu, closeIE, wakeAudio, checkSqueeze, trackClean, checkCollapse, setMuted, escapeDialog, openDialog, ADWARE_TOTAL } from "./lib/actions.js";
   import { pageMenu } from "./lib/pagemenu.js";
   import { MENUS } from "./lib/menus.js";
   import { I } from "./lib/icons.js";
@@ -17,6 +17,7 @@
   import Desktop from "./components/Desktop.svelte";
 
   let winEl = $state(), pageEl = $state();
+  const collapsed = $derived(ui.ended === "collapse" && adware().length >= ADWARE_TOTAL);
   const bottomBars = $derived(bars().filter(b => b.place === "bottom" && isOn(b.id)));
   const count = $derived(toolbarCount());
 
@@ -37,7 +38,7 @@
 
   $effect(() => document.body.classList.toggle("sparkle", ui.sparkle));
   $effect(() => { ui.viewPct; checkSqueeze(); });
-  $effect(() => { adware().length; ui.connected; trackClean(); });
+  $effect(() => { adware().length; ui.connected; trackClean(); checkCollapse(); });
 
   // Alt+F, Alt+E, Alt+V, Alt+A, Alt+T, Alt+H open the menus, as in IE.
   const MNEMONIC = { KeyF: "File", KeyE: "Edit", KeyV: "View", KeyA: "Favorites", KeyT: "Tools", KeyH: "Help" };
@@ -133,6 +134,7 @@
   class:max={ui.max || ui.full}
   class:min={ui.min}
   class:floating
+  class:collapsed
   class:loading={ui.loading}
   hidden={ui.crashed || ui.closed}
   bind:this={winEl}
@@ -156,7 +158,7 @@
 
   <Rebar />
 
-  <div class="mid">
+  <div class="mid" class:gone={collapsed}>
     <Sidebar />
     <div class="pane">
       <InfoBar />
@@ -178,6 +180,7 @@
 </main>
 
 <footer>
+<button class="about-link" onclick={() => openDialog("why")}>What is this?</button>
 <button class="sound-toggle" onclick={() => setMuted(!ui.muted)} aria-pressed={!ui.muted}>{@html ui.muted ? I.muted : I.speaker} Sound: {ui.muted ? "Off" : "On"}</button>
 <div class="era">October 2005 · Windows XP SP2 · Internet Explorer 6.0 · {count ? `${count} toolbar${count === 1 ? "" : "s"} and counting` : "0 toolbars (for now)"}</div>
 </footer>
