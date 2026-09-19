@@ -29,17 +29,46 @@ export function popupInfo() {
 
 // ---------------- navigation ----------------
 let loadTimer;
+// Every toolbar phones home on every page, so each one makes loading slower.
+// The status bar narrates what the page is waiting on, as IE's did.
 export function load(done, url = ui.url) {
   clearTimeout(loadTimer);
   ui.loading = true;
   ui.progress = 0;
+  ui.pageErrors = false;
   setStatus(`Opening page ${url}...`);
+  const bars = adware().map(b => b.id);
+  const drag = 1 + bars.length * 0.12;
+  let items = 3 + bars.length;
   const step = () => {
-    ui.progress += rand(8, 26);
-    if (ui.progress < 100) loadTimer = setTimeout(step, rand(50, 160));
-    else { ui.loading = false; ui.progress = 0; setStatus(); done(); }
+    ui.progress += rand(8, 26) / drag;
+    if (ui.progress >= 100) { ui.loading = false; ui.progress = 0; setStatus(); return done(); }
+    if (ui.progress > 20 && bars.length) {
+      const id = pick(bars);
+      items = Math.max(1, items - (Math.random() < 0.5 ? 1 : 0));
+      setStatus(pick([
+        `(${items} items remaining) Downloading picture http://ads.${id}.biz/banner_${Math.floor(rand(100, 999))}.gif...`,
+        `Waiting for http://track.${id}.biz/ping.asp?aff=2231...`,
+        `(${items} items remaining) Downloading picture http://img.${id}.biz/spacer.gif...`,
+        `Website found. Waiting for reply...`,
+      ]));
+    }
+    loadTimer = setTimeout(step, rand(50, 160));
   };
   step();
+}
+
+const SCRIPT_ERRORS = [
+  ["'{id}Track' is undefined", 2231], ["Object doesn't support this property or method", 88], ["'document.all.{id}Banner' is null or not an object", 417],
+  ["Permission denied", 1], ["Expected ';'", 12], ["Invalid argument.", 3007],
+];
+function scriptErrors(url) {
+  const bars = adware();
+  if (bars.length < 3 || Math.random() > 0.55) return [];
+  return Array.from({ length: 1 + Math.floor(rand(0, Math.min(4, bars.length / 3))) }, () => {
+    const [msg, line] = pick(SCRIPT_ERRORS);
+    return { line, char: Math.floor(rand(1, 80)), error: msg.replace("{id}", pick(bars).id), url };
+  });
 }
 
 export function go(raw, { push = true } = {}) {
@@ -53,6 +82,10 @@ export function go(raw, { push = true } = {}) {
     ui.title = `${r.title} - Microsoft Internet Explorer`;
     ui.highlight = false;
     ui.kevNote = "";
+    ui.errors = scriptErrors(r.url);
+    ui.pageErrors = ui.errors.length > 0;
+    if (ui.pageErrors) setStatus("Done, but with errors on page.");
+    if (r.mixed) openDialog("mixed");
   }, r.url);
 }
 
@@ -286,6 +319,7 @@ export function trackClean() {
     ui.cleanFor = 0;
     cleanTimer = setInterval(() => {
       ui.cleanFor = Math.floor((Date.now() - ui.cleanSince) / 1000);
+      if (ui.cleanFor === 60 && !ui.certified) { ui.certified = true; ding(); openDialog("certificate", { removed: Object.keys(ui.uninstalled).length }); }
       if (ui.cleanFor > ui.bestClean) {
         ui.bestClean = ui.cleanFor;
         try { localStorage.setItem("toolbar-season:best", String(ui.bestClean)); } catch {}

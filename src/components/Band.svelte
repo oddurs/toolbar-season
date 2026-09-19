@@ -1,6 +1,6 @@
 <script>
   import { ui } from "../lib/state.svelte.js";
-  import { act, closeBar, doSearch, openDialog } from "../lib/actions.js";
+  import { act, closeBar, doSearch, openDialog, openMenu } from "../lib/actions.js";
   import { I, smiley, SMILEY_MOODS } from "../lib/icons.js";
   import MenuBar from "./bars/MenuBar.svelte";
   import StandardButtons from "./bars/StandardButtons.svelte";
@@ -17,12 +17,31 @@
   const ico = svg => svg.replace("viewBox", 'class="ico" viewBox');
   const run = (it, e) => act[it.act]?.({ arg: it.arg, bar, el: e.currentTarget, e });
   const onkeydown = (engine, e) => e.key === "Enter" && doSearch(engine, queries[engine]);
+
+  // The » chevron lists whatever didn't fit, as IE's rebar did.
+  let el = $state();
+  let overflowing = $state(false);
+  $effect(() => {
+    const ro = new ResizeObserver(() => (overflowing = el.scrollWidth > el.clientWidth + 1));
+    ro.observe(el);
+    return () => ro.disconnect();
+  });
+  function chevron(e) {
+    const limit = el.getBoundingClientRect().right - 32;
+    const hidden = [...el.querySelectorAll(":scope > button:not(.chev):not(.band-x), :scope > .addrwrap ~ button")]
+      .filter(b => b.getBoundingClientRect().right > limit);
+    const r = e.currentTarget.getBoundingClientRect();
+    openMenu(r.left, r.bottom, hidden.length
+      ? hidden.map(b => ({ label: b.textContent.trim().replace(/▼$/, "") || b.getAttribute("aria-label"), fn: () => b.click() }))
+      : [{ label: "(nothing hidden, just ads)", dis: true }]);
+  }
 </script>
 
 <div
   class="band {bar.cls ?? ''}"
   class:fresh={ui.fresh[bar.id]}
   class:dragging
+  bind:this={el}
   style:background={ui.skins[bar.id] || null}
   data-bar={bar.id}
   role="toolbar"
@@ -55,8 +74,10 @@
       {/if}
     {/each}
   {/if}
+  {#if overflowing}
+    <button class="chev" class:builtin={bar.builtin} aria-label="More {bar.name} buttons" onclick={chevron}>»</button>
+  {/if}
   {#if !bar.builtin}
-    <span class="chev">»</span>
     <button class="band-x" title="Close {bar.name}" aria-label="Close {bar.name}" onclick={() => closeBar(bar.id)}>×</button>
   {/if}
 </div>

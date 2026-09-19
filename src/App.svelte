@@ -63,12 +63,14 @@
     if (e.key === "F5") { e.preventDefault(); act.refresh(); }
     if (e.key === "Escape") { closeMenu(); act.stop(); }
   }
-  function onclick(e) {
+  // Dismiss menus on pointer-down, before the click that may open another one.
+  function onpointerdown(e) {
+    wakeAudio();
     if (ui.menu && !e.target.closest(".menu, .mi")) closeMenu();
   }
 </script>
 
-<svelte:window {onkeydown} {onclick} onpointerdowncapture={wakeAudio} />
+<svelte:window {onkeydown} {onpointerdown} />
 
 <div class="win" class:max={ui.max || ui.full} class:min={ui.min} class:loading={ui.loading} hidden={ui.crashed} bind:this={winEl}>
   {#if !ui.full}

@@ -14,6 +14,9 @@ Things to try:
 - **Tools › Add or Remove Programs** removes them for good, if you can get through the uninstallers.
 - Right-click the page. Each toolbar adds itself to the menu.
 - Alt+F, Alt+V, Alt+T and the rest open the menus.
+- Watch the status bar while a page loads. Every toolbar makes it slower. Double-click "Done, but with errors on page."
+- Sign in to Free Hotmoil (Links bar).
+- Stay toolbar-free for a full minute.
 - Click an ad, punch the monkey, or say "Don't Install" to a security prompt.
 - Try changing your home page in **Tools › Internet Options**.
 - Type in the address bar and see what AutoComplete suggests.

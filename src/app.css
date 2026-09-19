@@ -40,6 +40,7 @@ button { font: inherit; color: inherit; }
 
 /* ---------- the window ---------- */
 .win {
+  box-sizing: border-box;
   position: fixed;
   inset: 0 0 20px;
   margin: auto;
@@ -319,7 +320,7 @@ input.box {
   .win { inset: 0 0 18px; width: 100%; height: calc(100% - 18px); border-radius: 0; }
   .side { width: 120px; }
   .status .st-view, .status .st-zone { display: none; }
-  .era { bottom: 2px; }
+  .era { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition: none !important; }
@@ -506,3 +507,37 @@ textarea.source { width: 100%; height: 220px; box-sizing: border-box; font: 12px
 .offer p { margin: 4px 0 0; }
 .nothanks { text-align: right; font-size: 10px; }
 .nothanks .linkish { color: #999; font-size: 10px; }
+
+/* ---------- round five ---------- */
+.chev { pointer-events: auto; border: 0; background: linear-gradient(90deg, transparent, var(--luna-face) 30%); padding: 0 3px 0 8px; height: 20px; cursor: pointer; z-index: 1; }
+.chev.builtin { right: 1px; }
+.chev:hover { color: #000; background: #fff; border-radius: 2px; box-shadow: inset 0 0 0 1px #cec9b6; }
+.status .st-err { border: 1px solid; border-color: var(--luna-lo) var(--luna-hi) var(--luna-hi) var(--luna-lo); background: none; font: inherit; text-align: left; cursor: default; }
+.status .st-lock { width: 22px; justify-content: center; padding: 0; }
+.scripterr { background: #fff; border: 1px solid #7f9db9; padding: 6px; font: 11px var(--ui); display: grid; gap: 2px; user-select: text; }
+label.chk { display: flex; gap: 4px; align-items: center; }
+
+.hm { font: 12px Verdana, sans-serif; background: #f2f5fb; min-height: 100%; }
+.hm-banner { background: #ffd; border-bottom: 1px solid #cc9; padding: 6px; text-align: center; color: #060; }
+.hm-banner .broken { display: inline-grid; place-items: center; width: 468px; max-width: 100%; height: 22px; border: 1px solid #999; color: #c00; font-size: 11px; background: #fff; }
+.hm-card { max-width: 340px; margin: 12px auto; background: #fff; border: 1px solid #9ab; padding: 12px; }
+.hm-logo { font: bold 20px "Trebuchet MS", sans-serif; color: #11479e; margin-bottom: 8px; }
+.hm-logo span { color: #f28b00; }
+.hm-card form { display: grid; gap: 6px; }
+.hm-card label:not(.chk) { display: grid; gap: 2px; }
+.hm-card .box { width: 100%; box-sizing: border-box; }
+.hm-inbox { font: 12px Verdana, sans-serif; }
+.hm-bar { display: flex; gap: 12px; align-items: baseline; background: #11479e; color: #fff; padding: 5px 10px; }
+.hm-bar .full { margin-left: auto; color: #ffd966; font-size: 11px; }
+.hm-inbox table { border-collapse: collapse; width: 100%; }
+.hm-inbox th { text-align: left; background: #dfe7f5; padding: 3px 6px; }
+.hm-inbox td { padding: 3px 6px; border-bottom: 1px solid #e6e6e6; cursor: pointer; white-space: nowrap; }
+.hm-inbox td:nth-child(2) { white-space: normal; }
+.hm-inbox tr:hover td { background: #fff8c8; }
+
+.cert { border: 6px double #b08a2e; background: #fffdf2; padding: 14px; text-align: center; font-family: Georgia, "Times New Roman", serif; }
+.cert-h { font: bold 20px "Old English Text MT", Georgia, serif; color: #6b4d0f; }
+.cert-name { font: italic 24px Georgia, serif; border-bottom: 1px solid #b08a2e; margin: 0 40px 8px; }
+.cert-foot { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 12px; font-size: 12px; }
+.cert .sig { font: italic 16px "Brush Script MT", "Segoe Script", cursive; text-align: right; }
+.cert .sig small { font: 10px Georgia, serif; }

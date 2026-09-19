@@ -15,8 +15,11 @@
   import DialUp from "./dialogs/DialUp.svelte";
   import Arp from "./dialogs/Arp.svelte";
   import Uninstall from "./dialogs/Uninstall.svelte";
+  import Mixed from "./dialogs/Mixed.svelte";
+  import ScriptError from "./dialogs/ScriptError.svelte";
+  import Certificate from "./dialogs/Certificate.svelte";
 
-  const KINDS = { alert: Alert, activex: ActiveX, pop: Pop, scan: Scan, addons: Addons, options: Options, about: About, why: Why, crash: Crash, source: Source, smiley: Smiley, dialup: DialUp, arp: Arp, uninstall: Uninstall };
+  const KINDS = { alert: Alert, activex: ActiveX, pop: Pop, scan: Scan, addons: Addons, options: Options, about: About, why: Why, crash: Crash, source: Source, smiley: Smiley, dialup: DialUp, arp: Arp, uninstall: Uninstall, mixed: Mixed, scripterror: ScriptError, certificate: Certificate };
 </script>
 
 {#each ui.dialogs as dlg (dlg.id)}

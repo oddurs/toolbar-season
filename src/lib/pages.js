@@ -8,6 +8,7 @@ import Offline from "../components/pages/Offline.svelte";
 import WindowsUpdate from "../components/pages/WindowsUpdate.svelte";
 import Synergy from "../components/pages/Synergy.svelte";
 import Hamsters from "../components/pages/Hamsters.svelte";
+import Hotmoil from "../components/pages/Hotmoil.svelte";
 import { hijacker } from "./state.svelte.js";
 
 export const ENGINES = {
@@ -43,6 +44,8 @@ const ROUTES = [
   { match: u => /^http:\/\/(www\.|v5\.)?windowsupdate\.fake/.test(u), page: WindowsUpdate, title: "Microsoft Windows Update" },
   { match: u => /^http:\/\/(www\.)?synergyvision-solutions\.fake/.test(u), page: Synergy, title: "SynergyVision Solutions, Inc. :: Welcome ::" },
   { match: u => /^http:\/\/(www\.)?hamsterparty\.fake/.test(u), page: Hamsters, title: "THE HAMSTER PARTY!!!" },
+  { match: u => u.startsWith("https://login.hotmoil.com"), page: Hotmoil, title: "Sign In", mixed: true, props: () => ({ mode: "signin" }) },
+  { match: u => /hotmoil\.msm\.com/.test(u), page: Hotmoil, title: "Hotmoil - Inbox", props: () => ({ mode: "inbox" }) },
   { match: u => u === "offline:", page: Offline, title: "Web page unavailable while offline" },
   { match: u => u === "about:blank", page: null, title: "about:blank" },
 ];
@@ -60,6 +63,7 @@ export function resolve(url) {
     url,
     title: typeof r.title === "function" ? r.title(url) : r.title,
     page: r.page,
+    mixed: !!r.mixed,
     props: r.props?.(url) || {},
   };
 }

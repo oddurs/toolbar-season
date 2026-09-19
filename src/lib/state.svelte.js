@@ -4,12 +4,14 @@ import { TOOLBARS, ALL_BARS, byId } from "./toolbars.js";
 
 export const HOME_URL = "http://www.home-search-portal.biz/?aff=2231&src=hp_hijack";
 export const KEV_URL = "http://www.geocitiez.com/Area51/Nebula/4417/";
+export const HOTMOIL_URL = "https://login.hotmoil.com/ppsecure/post.srf?id=2";
+export const INBOX_URL = "http://by12fd.bay12.hotmoil.msm.com/cgi-bin/HoTMaiL";
 export const FORUM_URL = "http://forums.techguyz.fake/showthread.php?t=41742";
 export const UPDATE_URL = "http://v5.windowsupdate.fake/";
 export const SYNERGY_URL = "http://www.synergyvision-solutions.fake/";
 export const HAMSTER_URL = "http://www.hamsterparty.fake/";
 // Sites IE knows about, for AutoComplete.
-export const KNOWN_URLS = [HOME_URL, KEV_URL, FORUM_URL, UPDATE_URL, SYNERGY_URL, HAMSTER_URL];
+export const KNOWN_URLS = [HOME_URL, KEV_URL, FORUM_URL, UPDATE_URL, SYNERGY_URL, HAMSTER_URL, HOTMOIL_URL];
 
 export const ui = $state({
   order: TOOLBARS.map(b => b.id), // rebar order, including bars not yet installed
@@ -45,6 +47,10 @@ export const ui = $state({
   viewPct: 0,
 
   connected: false,
+  pageErrors: false,
+  errors: [], // script errors on the current page
+  hideNonsecure: false,
+  certified: false,
   uninstalled: {}, // removed through Add or Remove Programs
   muted: false,
   squeezeOffered: false,
