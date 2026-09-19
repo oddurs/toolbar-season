@@ -68,6 +68,18 @@
     openMenu(e.clientX, e.clientY, pageMenu());
   }
 
+  // Touch screens have no right-click: a long press opens the same menu.
+  let press;
+  function onPagePointerDown(e) {
+    if (e.pointerType !== "touch" || e.target.closest("input, textarea")) return;
+    const x = e.clientX, y = e.clientY;
+    const cancel = () => { clearTimeout(press); removeEventListener("pointerup", cancel); removeEventListener("pointermove", moved); };
+    const moved = ev => Math.hypot(ev.clientX - x, ev.clientY - y) > 10 && cancel();
+    press = setTimeout(() => { cancel(); closeMenu(); openMenu(x, y, pageMenu()); }, 550);
+    addEventListener("pointerup", cancel);
+    addEventListener("pointermove", moved);
+  }
+
   function onkeydown(e) {
     if (menuKey(e)) return;
     if (e.key === "F11") { e.preventDefault(); act.full(); }
@@ -84,8 +96,10 @@
     const r = winEl.getBoundingClientRect();
     ui.rect = { x: r.left, y: r.top, w: r.width, h: r.height };
   }
+  // On a phone the window fills the screen and stays put.
+  const phone = () => innerWidth <= 640;
   function dragWin(e) {
-    if (e.button !== 0 || e.target.closest("button") || ui.max || ui.min || ui.full) return;
+    if (phone() || e.button !== 0 || e.target.closest("button") || ui.max || ui.min || ui.full) return;
     e.preventDefault();
     pin();
     const sx = e.clientX - ui.rect.x, sy = e.clientY - ui.rect.y;
@@ -95,7 +109,7 @@
     });
   }
   function resize(e, edge) {
-    if (e.button !== 0 || ui.max || ui.min || ui.full) return;
+    if (phone() || e.button !== 0 || ui.max || ui.min || ui.full) return;
     e.preventDefault();
     e.stopPropagation();
     pin();
@@ -162,7 +176,7 @@
     <Sidebar />
     <div class="pane">
       <InfoBar />
-      <div class="page" {oncontextmenu} role="presentation" class:hl={ui.highlight} style:font-size="{ui.textSize}px" bind:this={pageEl}>
+      <div class="page" {oncontextmenu} onpointerdown={onPagePointerDown} role="presentation" class:hl={ui.highlight} style:font-size="{ui.textSize}px" bind:this={pageEl}>
         {#if ui.route?.page}
           {#key ui.route.key}
             <ui.route.page {...ui.route.props} />

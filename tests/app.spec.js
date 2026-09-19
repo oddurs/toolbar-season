@@ -112,11 +112,22 @@ test("the File Download flow installs a toolbar", async ({ page }) => {
   await expect(band(page, "coupon")).toHaveCount(1);
 });
 
-test("the page's right-click menu grows with each toolbar", async ({ page }) => {
+test("the page's right-click menu grows with each toolbar", async ({ page, isMobile }) => {
+  test.skip(isMobile, "Phones use a long press; see the next test.");
   await connect(page);
   await page.locator(".page").click({ button: "right", position: { x: 400, y: 120 } });
   await expect(page.locator(".menu .it.spons")).toHaveCount(9);
   await page.keyboard.press("Escape");
+});
+
+test("a long press opens the page menu on touch screens", async ({ page, isMobile }) => {
+  test.skip(!isMobile, "Touch only.");
+  await connect(page);
+  const box = await page.locator(".page").boundingBox();
+  const at = { clientX: box.x + 60, clientY: box.y + 20, pointerType: "touch", bubbles: true, isPrimary: true };
+  await page.locator(".page").dispatchEvent("pointerdown", at);
+  await page.waitForTimeout(700);
+  await expect(page.locator(".menu .it.spons")).toHaveCount(9);
 });
 
 test("menus work from the keyboard", async ({ page }) => {
@@ -216,7 +227,8 @@ test.describe("on a phone", () => {
   });
 });
 
-test("the window can be dragged and resized", async ({ page }) => {
+test("the window can be dragged and resized", async ({ page, isMobile }) => {
+  test.skip(isMobile, "On a phone the window fills the screen and stays put.");
   await connect(page);
   const win = page.locator(".win");
   const before = await win.boundingBox();

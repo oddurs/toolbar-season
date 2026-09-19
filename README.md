@@ -36,7 +36,7 @@ npm install
 npm run dev       # dev server at http://localhost:5173
 npm run build     # static build in dist/
 npm run preview   # serve the build
-npm test          # end-to-end and accessibility tests (Playwright + axe, uses your installed Chrome)
+npm test          # end-to-end and accessibility tests in Chrome, WebKit, Firefox and an iPhone (Playwright + axe)
 npm run og        # regenerate public/og.png, the link preview image
 ```
 

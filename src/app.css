@@ -632,7 +632,8 @@ body.dragging-win iframe { pointer-events: none; }
   background: none; border: 0; padding: 1px 4px; color: #fff; font: 11px var(--ui);
   text-decoration: underline; text-shadow: 1px 1px 1px rgba(0,0,0,.6); cursor: pointer;
 }
-@media (max-width: 640px) { .about-link { left: auto; right: 8px; } }
+@media (max-width: 640px) { .about-link { left: auto; right: 8px; } .rz { display: none; } }
+.page { -webkit-touch-callout: none; }
 
 /* The collapse: the page is gone and the window closes up around its toolbars. */
 .mid.gone { flex: 0 0 0; min-height: 0; overflow: hidden; }
