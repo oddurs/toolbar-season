@@ -4,6 +4,14 @@ import { ui, TEST, isOn, isInstalled, adware, hijacker, KEV_URL, HOME_URL, HAMST
 import { ALL_BARS, EXTRA_BARS, byId } from "./toolbars.js";
 import { resolve, normalize, searchUrl, ENGINES } from "./pages.js";
 import { navClick, ding, chord, blocked } from "./sound.js";
+import { summon, joke, sing, react, banish } from "./buddy.js";
+
+// Buddy buttons on his toolbar call him over first if he's away.
+function withBuddy(fn) {
+  if (ui.buddy?.here) return fn();
+  summon("You rang? Here I am!");
+  setTimeout(fn, TEST ? 0 : 2500);
+}
 export { wakeAudio } from "./sound.js";
 
 export const rand = (a, b) => a + Math.random() * (b - a);
@@ -128,7 +136,7 @@ export function closeBar(id, { silent = false } = {}) {
   ui.on[id] = false;
   clearTimeout(respawns[id]);
   if (b.builtin || !b.respawn) return;
-  if (!silent) setStatus(`${b.name} closed. (For now.)`);
+  if (!silent) { setStatus(`${b.name} closed. (For now.)`); react("closed", b.name); }
   respawns[id] = setTimeout(() => {
     if (isOn(id) || ui.uninstalled[id]) return;
     ui.on[id] = true; flash(id);
@@ -146,6 +154,7 @@ export function installBar(b, msg, { self = false } = {}) {
   load(() => {
     ui.installed[b.id] = true; ui.on[b.id] = true; flash(b.id);
     showInfo(msg || `${b.name} was installed successfully. Thank you for choosing ${b.name}!`, () => openDialog("addons"), "info");
+    react("installed", b.name);
   });
 }
 
@@ -158,6 +167,7 @@ export function uninstall(id) {
   ui.installed[id] = false;
   ui.uninstalled[id] = true;
   ui.stats.removed++;
+  id === "bonzibar" ? banish() : react("removed", b.name);
   if (!b.respawn || TEST || Math.random() > 0.3) return false;
   respawns[id] = setTimeout(() => {
     if (!ui.uninstalled[id]) return;
@@ -265,16 +275,6 @@ function restart() {
 export const openMenu = (x, y, items, owner = null) => (ui.menu = { x, y, items, owner });
 export const closeMenu = () => (ui.menu = null);
 
-// ---------------- the purple helper ----------------
-export const BUDDY_LINES = [
-  "Hi! I'm BuddyBonz, your new Internet friend! Would you like me to help you search the web?",
-  "Did you know? You can make your browsing even better with more toolbars!",
-  "Knock knock! Who's there? A pop-up! A pop-up who? A pop-up you can't close!",
-  "I noticed you're trying to read a web page. Would you like help with that?",
-  "♪ Daisy, Daisy, give me your answer do… ♪",
-];
-export const buddy = line => (ui.buddy = { line: line || pick(BUDDY_LINES), n: (ui.buddy?.n || 0) + 1 });
-
 // ---------------- toolbar button actions ----------------
 export const act = {
   back, fwd, stop, refresh, home,
@@ -304,8 +304,8 @@ export const act = {
   },
   radio: () => { setStatus("Buffering… 3%… 4%… Connecting to StreamCast… Buffering…"); setTimeout(() => openPop("winner"), 1500); },
   boost: () => { setStatus("Boosting connection…"); load(() => alertDlg("Optimization complete! Your connection is now <b>56.6 kbps</b>.<br>(Up from 56.6 kbps.)"), "boost://optimize"); },
-  buddyJoke: () => buddy(BUDDY_LINES[2]),
-  buddySing: () => buddy(BUDDY_LINES[4]),
+  buddyJoke: () => withBuddy(joke),
+  buddySing: () => withBuddy(sing),
 };
 
 export const favoritesMenu = () => [
@@ -381,6 +381,7 @@ function end(kind) {
 export function checkSqueeze() {
   if (ui.squeezeOffered || ui.ended || isInstalled("screenspace") || !ui.connected || ui.viewPct > 8 || ui.viewPct === 0) return;
   ui.squeezeOffered = true;
+  react("squeezed");
   setTimeout(() => !ui.ended && !isInstalled("screenspace") && activeX(byId("screenspace")), 1200);
 }
 
@@ -389,6 +390,7 @@ let cleanTimer;
 export function trackClean() {
   const clean = adware().length === 0 && ui.connected;
   if (clean && !ui.cleanSince) {
+    react("clean");
     ui.cleanSince = Date.now();
     ui.cleanFor = 0;
     cleanTimer = setInterval(() => {
@@ -421,6 +423,7 @@ if (TEST && typeof window !== "undefined") {
   window.__season = {
     installAll: () => EXTRA_BARS.forEach(b => { if (!ui.order.includes(b.id)) ui.order.splice(ui.order.indexOf("coolbar"), 0, b.id); ui.installed[b.id] = true; ui.on[b.id] = true; }),
     removeAll: () => adware().forEach(b => uninstall(b.id)),
+    buddy: () => summon(),
   };
 }
 
@@ -446,7 +449,7 @@ export function connected() {
   setTimeout(popupInfo, 2500);
   setTimeout(adTick, 9000);
   setTimeout(creep, 30000);
-  setTimeout(() => buddy(BUDDY_LINES[0]), 22000);
+  setTimeout(() => summon(), 22000);
 }
 
 export function dialUp() {

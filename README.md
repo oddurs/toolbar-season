@@ -17,6 +17,7 @@ Every name in it is a parody. Sound is on by default; the modem does the whole h
 
 ## Things to find
 
+- BuddyBonz, the purple desktop pal: he talks out loud, tells jokes, sings "Daisy Bell", comments on your toolbars, and comes back when you hide him. Drag him around; right-click him. Getting rid of him takes Add or Remove Programs.
 - Punch the monkey. Download something "free" and watch the transfer rate.
 - Tools › Add or Remove Programs, and the uninstaller's exit survey.
 - Right-click the page: every toolbar adds itself to the menu.

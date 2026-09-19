@@ -2,14 +2,19 @@
   // Add or Remove Programs, as it looked in XP SP2.
   import Dialog from "../Dialog.svelte";
   import { I } from "../../lib/icons.js";
-  import { isInstalled } from "../../lib/state.svelte.js";
+  import { ui, isInstalled } from "../../lib/state.svelte.js";
   import { ALL_BARS } from "../../lib/toolbars.js";
   import { openDialog } from "../../lib/actions.js";
 
   let { dlg, close } = $props();
   let selected = $state(null);
 
-  const rows = $derived(ALL_BARS.filter(b => !b.builtin && isInstalled(b.id)));
+  // BuddyBonz came bundled too: he's listed whenever he's around, toolbar or not.
+  const BUDDY = { id: "bonzibar", name: "BuddyBonz", respawn: 20 };
+  const rows = $derived([
+    ...ALL_BARS.filter(b => !b.builtin && isInstalled(b.id) && b.id !== "bonzibar"),
+    ...(ui.buddy || isInstalled("bonzibar") ? [BUDDY] : []),
+  ]);
   // Stable fake numbers per program.
   const hash = s => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
   const size = b => (b.id === "gooble" ? 2.1 : 4 + (hash(b.id) % 380) / 10).toFixed(2);

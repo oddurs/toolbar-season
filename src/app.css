@@ -302,19 +302,6 @@ input.box {
 .tabs span { padding: 3px 7px; border: 1px solid #919b9c; border-bottom: 0; background: linear-gradient(#fff, #ecebe6); margin-right: -1px; border-radius: 3px 3px 0 0; }
 .tabs span.on { background: #fcfcfe; border-top: 2px solid #ffc83c; position: relative; top: 1px; }
 
-/* the purple helper */
-.buddy { position: fixed; z-index: 250; width: 86px; cursor: pointer; transition: transform .3s; }
-.buddy svg { width: 86px; height: 104px; filter: drop-shadow(2px 3px 2px rgba(0,0,0,.35)); }
-.buddy.bounce { animation: bounce .5s 2; }
-@keyframes bounce { 50% { transform: translateY(-14px); } }
-.bubble {
-  position: absolute; bottom: 96px; right: 50px; width: 210px;
-  background: var(--info); border: 1px solid #000; border-radius: 8px;
-  padding: 8px; font: 11px var(--ui); color: #000; cursor: default;
-}
-.bubble::after { content: ""; position: absolute; right: 14px; bottom: -9px; border: 9px solid transparent; border-bottom: 0; border-top-color: #000; }
-.bubble .btns { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-.bubble .xpbtn { min-width: 0; height: 20px; padding: 0 6px; font-size: 11px; white-space: nowrap; }
 
 @media (max-width: 640px) {
   .win { inset: 0 0 18px; width: 100%; height: calc(100% - 18px); border-radius: 0; }
@@ -338,8 +325,6 @@ body.sparkle, body.sparkle * {
 .page.hl :is(p, a, b, span, td, div, li, h1) { background: #ff0; }
 .page.hl :is(p, td, li):nth-child(2n) { background: #0ff; }
 .page.hl :is(a, b):nth-child(3n) { background: #f9f; }
-.buddy { right: 40px; bottom: 70px; }
-.buddy-body { border: 0; background: none; padding: 0; cursor: pointer; display: block; }
 .addons { max-height: 240px; overflow: auto; background: #fff; border: 1px solid #7f9db9; }
 .addons table { border-collapse: collapse; width: 100%; font: 11px var(--ui); }
 .addons th { background: var(--luna-face); text-align: left; padding: 3px; position: sticky; top: 0; }
@@ -640,3 +625,47 @@ body.dragging-win iframe { pointer-events: none; }
 .win.collapsed { height: fit-content !important; animation: thunk .35s ease-out; }
 .win.collapsed .rebar { flex: none; }
 @keyframes thunk { 0% { transform: scaleY(1.04); } 60% { transform: scaleY(.985); } }
+
+/* ---------- BuddyBonz ---------- */
+.buddy { position: fixed; z-index: 250; right: 40px; bottom: 60px; width: 110px; animation: b-enter .8s cubic-bezier(.2,.9,.3,1.2); }
+.buddy.placed { right: auto; bottom: auto; }
+.buddy.leaving { animation: b-exit .6s ease-in forwards; }
+@keyframes b-enter { from { transform: translateX(170px) rotate(12deg); opacity: 0; } }
+@keyframes b-exit { to { transform: translateX(200px) rotate(14deg); opacity: 0; } }
+.buddy-body { display: block; border: 0; background: none; padding: 0; cursor: grab; touch-action: none; }
+.buddy-body:active { cursor: grabbing; }
+.buddy-body svg { width: 110px; height: 132px; display: block; overflow: visible; filter: drop-shadow(2px 4px 3px rgba(0,0,0,.35)); }
+.buddy .b-all { transform-box: view-box; transform-origin: 55px 128px; animation: b-breathe 3.2s ease-in-out infinite; }
+@keyframes b-breathe { 50% { transform: scale(1.015, .99); } }
+.buddy .b-lid { transform-box: fill-box; transform-origin: top; transform: scaleY(0); animation: b-blink 5s infinite; }
+@keyframes b-blink { 0%, 93%, 100% { transform: scaleY(0); } 95.5% { transform: scaleY(1); } }
+.buddy .b-arm { transform-box: view-box; transform-origin: 86px 80px; }
+.buddy.wave .b-arm { animation: b-wave .45s ease-in-out infinite alternate; }
+@keyframes b-wave { from { transform: rotate(-120deg); } to { transform: rotate(-165deg); } }
+/* mouths */
+.buddy .b-open, .buddy .b-sad { opacity: 0; }
+.buddy.talk .b-closed, .buddy.laugh .b-closed, .buddy.sing .b-closed, .buddy.sad .b-closed { opacity: 0; }
+.buddy.talk .b-open { opacity: 1; animation: b-flap .22s steps(1) infinite; }
+@keyframes b-flap { 50% { opacity: 0; } }
+.buddy.laugh .b-open, .buddy.sing .b-open { opacity: 1; }
+.buddy.sad .b-sad { opacity: 1; }
+.buddy.sad .b-brow { transform: translateY(2px); }
+.buddy.laugh .b-all { animation: b-shake .12s linear 8; }
+@keyframes b-shake { 50% { transform: translateX(2px) rotate(2deg); } }
+.buddy.sing .b-all { animation: b-sway 1.2s ease-in-out infinite alternate; }
+@keyframes b-sway { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
+/* speech bubble */
+.bubble {
+  position: absolute; bottom: 136px; right: 30px; width: 230px;
+  background: var(--info); border: 1px solid #000; border-radius: 9px;
+  padding: 8px 9px; font: 12px/1.35 var(--ui); color: #000; cursor: default;
+  box-shadow: 2px 3px 4px rgba(0,0,0,.25);
+}
+.bubble::after { content: ""; position: absolute; right: 22px; bottom: -10px; border: 10px solid transparent; border-bottom: 0; border-top-color: #000; }
+.bubble::before { content: ""; position: absolute; right: 23px; bottom: -8px; z-index: 1; border: 9px solid transparent; border-bottom: 0; border-top-color: var(--info); }
+.bubble .unsaid { visibility: hidden; }
+.bubble .btns { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 7px; }
+.bubble .xpbtn { min-width: 0; height: 20px; padding: 0 7px; font-size: 11px; white-space: nowrap; }
+.lyrics span { color: #999; transition: color .1s; }
+.lyrics span.sung { color: #000; }
+.lyrics span.now { color: #7b3fb8; font-weight: bold; }

@@ -333,3 +333,54 @@ test("What is this? explains the piece", async ({ page }) => {
   await page.getByRole("button", { name: "What is this?" }).click();
   await expect(page.getByRole("dialog", { name: "What is this?" })).toContainText("It ends one of two ways");
 });
+
+test.describe("BuddyBonz", () => {
+  const buddy = page => page.locator(".buddy");
+  const bubble = page => page.locator(".buddy .bubble");
+
+  test("arrives, talks, and giggles when clicked", async ({ page }) => {
+    await connect(page);
+    await page.evaluate(() => window.__season.buddy());
+    await expect(bubble(page)).toContainText("I'm BuddyBonz");
+    await page.getByRole("button", { name: /^BuddyBonz\./ }).click();
+    await expect(bubble(page)).toContainText(/tickles|fur|again/);
+  });
+
+  test("has his own menu, and sings Daisy Bell", async ({ page, isMobile }) => {
+    test.skip(isMobile, "Right-click menu; phones use the bubble's buttons.");
+    await connect(page);
+    await page.evaluate(() => window.__season.buddy());
+    await page.getByRole("button", { name: /^BuddyBonz\./ }).click({ button: "right" });
+    await expect(page.locator(".menu .it")).toContainText(["Tell me a joke", "Tell me a fact", "Sing a song"]);
+    await page.locator(".menu .it", { hasText: "Sing a song" }).click();
+    await expect(bubble(page).locator(".lyrics")).toContainText("Dai-sy");
+    await expect(bubble(page).locator(".lyrics .sung").first()).toBeVisible();
+  });
+
+  test("Hide works for about a minute", async ({ page }) => {
+    await connect(page);
+    await page.evaluate(() => window.__season.buddy());
+    await bubble(page).getByRole("button", { name: "Hide" }).click();
+    await expect(buddy(page)).toHaveCount(0);
+    await expect(bubble(page)).toContainText(/back|rid of me|Hi again/);
+  });
+
+  test("uninstalling him is the only thing that works", async ({ page }) => {
+    await connect(page);
+    await page.evaluate(() => window.__season.buddy());
+    await page.keyboard.press("Alt+KeyT");
+    await page.locator(".menu .it", { hasText: "Add or Remove Programs" }).click();
+    await page.locator(".arp-row", { hasText: "BuddyBonz" }).click();
+    await page.locator(".arp-row.sel").getByRole("button", { name: "Remove" }).click();
+    const wiz = page.getByRole("dialog", { name: "BuddyBonz Uninstall" });
+    await wiz.getByRole("button", { name: "Yes" }).click();
+    await wiz.getByText("It shows too many ads").click();
+    await wiz.getByRole("button", { name: "Next >" }).click();
+    await wiz.getByRole("button", { name: "no thanks, uninstall anyway" }).click();
+    await wiz.getByRole("button", { name: "Finish" }).click();
+    await expect(buddy(page)).toHaveCount(0);
+    await page.evaluate(() => window.__season.buddy());
+    await page.waitForTimeout(300);
+    await expect(buddy(page)).toHaveCount(0);
+  });
+});

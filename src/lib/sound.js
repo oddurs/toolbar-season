@@ -191,3 +191,45 @@ export function canon() {
   schedule();
   return () => { stopped = true; clearTimeout(timer); };
 }
+
+// "Daisy Bell" (1892, public domain), the song computers sing. Calls onNote(i)
+// as each syllable starts and onDone() at the end. Returns a stop function.
+export const DAISY = [
+  ["Dai-", "G5", 3], ["sy, ", "E5", 3], ["Dai-", "C5", 3], ["sy, ", "G4", 3],
+  ["give ", "A4", 1], ["me ", "B4", 1], ["your ", "C5", 1], ["an-", "A4", 2], ["swer, ", "C5", 1], ["do. ", "G4", 5],
+  ["I'm ", "D5", 3], ["half ", "G5", 3], ["cra-", "E5", 3], ["zy, ", "C5", 3],
+  ["all ", "A4", 1], ["for ", "B4", 1], ["the ", "C5", 1], ["love ", "D5", 2], ["of ", "E5", 1], ["you!", "D5", 5],
+];
+export function daisy(onNote, onDone) {
+  const beat = 0.3, timers = [], gains = [];
+  let stopped = false;
+  (async () => {
+    const c = await ready();
+    if (stopped) return;
+    let t = 0;
+    const t0 = c ? c.currentTime + 0.05 : 0;
+    DAISY.forEach(([, note, beats], i) => {
+      timers.push(setTimeout(() => onNote(i), t * 1000));
+      if (c) {
+        const start = t0 + t, dur = beats * beat * 0.92, f = NOTE(note);
+        const o = c.createOscillator(), g = c.createGain(), vib = c.createOscillator(), depth = c.createGain();
+        o.type = "square"; o.frequency.value = f;
+        vib.frequency.value = 5.5; depth.gain.value = f * 0.012;     // the wobble
+        vib.connect(depth).connect(o.frequency);
+        g.gain.setValueAtTime(0, start); g.gain.linearRampToValueAtTime(0.035, start + 0.03);
+        g.gain.setValueAtTime(0.035, start + dur - 0.05); g.gain.linearRampToValueAtTime(0, start + dur);
+        o.connect(g).connect(c.destination);
+        o.start(start); o.stop(start + dur); vib.start(start); vib.stop(start + dur);
+        gains.push(g);
+      }
+      t += beats * beat;
+    });
+    timers.push(setTimeout(onDone, t * 1000 + 400));
+  })();
+  return () => {
+    stopped = true;
+    timers.forEach(clearTimeout);
+    // Silence the notes already scheduled.
+    for (const g of gains) { try { g.gain.cancelScheduledValues(0); g.gain.value = 0; } catch {} }
+  };
+}
